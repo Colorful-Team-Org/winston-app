@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
-import { Heading, Form, Paragraph, Flex } from '@contentful/f36-components';
-import { css } from 'emotion';
 import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
+import styles from './styles';
+import { Box, Heading } from '@contentful/f36-components';
+import { ReactComponent as Logo } from '../../images/colorful.svg';
 
 export interface AppInstallationParameters {}
 
@@ -23,7 +24,7 @@ const ConfigScreen = () => {
     // Get current the state of EditorInterface and other entities
     // related to this app installation
     const currentState = await sdk.app.getCurrentState();
-
+    console.log(currentState);
     return {
       // Parameters to be persisted as the app configuration.
       parameters,
@@ -44,7 +45,8 @@ const ConfigScreen = () => {
     (async () => {
       // Get current parameters of the app.
       // If the app is not installed yet, `parameters` will be `null`.
-      const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
+      const currentParameters: AppInstallationParameters | null =
+        await sdk.app.getParameters();
 
       if (currentParameters) {
         setParameters(currentParameters);
@@ -57,12 +59,20 @@ const ConfigScreen = () => {
   }, [sdk]);
 
   return (
-    <Flex flexDirection="column" className={css({ margin: '80px', maxWidth: '800px' })}>
-      <Form>
-        <Heading>App Config</Heading>
-        <Paragraph>Welcome to your contentful app. This is your config page.</Paragraph>
-      </Form>
-    </Flex>
+    <>
+      <Box className={styles.background} />
+      <Box className={styles.body}>
+        <Heading>Configuration</Heading>
+        <hr className={styles.splitter} />
+      </Box>
+      <Box
+        style={{ textAlign: 'center' }}
+        paddingTop="spacingXl"
+        paddingBottom="spacingXl"
+      >
+        <Logo width="50px" />
+      </Box>
+    </>
   );
 };
 

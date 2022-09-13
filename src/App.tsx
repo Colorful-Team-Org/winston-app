@@ -1,14 +1,17 @@
 import React, { useMemo } from 'react';
 import { locations } from '@contentful/app-sdk';
-import ConfigScreen from './locations/ConfigScreen';
 import { useSDK } from '@contentful/react-apps-toolkit';
+
+import ConfigScreen from './locations/configuration/ConfigScreen';
 import Home from './locations/Home';
+import Sidebar from './locations/Sidebar';
 
 import './App.css';
 
 const ComponentLocationSettings = {
   [locations.LOCATION_APP_CONFIG]: ConfigScreen,
   [locations.LOCATION_HOME]: Home,
+  [locations.LOCATION_ENTRY_SIDEBAR]: Sidebar,
 };
 
 const App = () => {

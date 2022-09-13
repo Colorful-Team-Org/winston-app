@@ -1,8 +1,9 @@
-import tokens from '@contentful/f36-tokens';
-import { Flex, Icon, Text } from '@contentful/f36-components';
+import { Box, Flex, Icon, Text } from '@contentful/f36-components';
 import { FC, ReactNode } from 'react';
 
 import { BiCube } from 'react-icons/bi';
+import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
+import Container from '../Container';
 
 type HeaderProps = {
   user: any;
@@ -11,29 +12,14 @@ type HeaderProps = {
 };
 
 const Header: FC<HeaderProps> = ({ user, spaceName }: HeaderProps) => (
-  <Flex
-    as="header"
-    flexDirection="row"
-    padding="spacingXl"
-    marginBottom="spacingL"
-    fullWidth={true}
-    style={{
-      borderBottom: `solid 2px ${tokens.gray300}`,
-      background: '#fff',
-    }}
-  >
-    <Flex
-      as="div"
-      flexDirection="column"
-      gap="spacingS"
-      fullWidth={true}
-      style={{
-        maxWidth: '1120px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-      }}
-    >
-      <Flex as="span" gap="spacingS" alignItems="center">
+  <Container flexDirection="row">
+    <Box style={{ flex: '1' }}>
+      <Flex
+        as="span"
+        gap="spacingS"
+        alignItems="center"
+        marginBottom="spacingS"
+      >
         <Icon as={BiCube} color="primary" size="medium" variant="secondary" />
         <Text
           fontSize="fontSizeL"
@@ -44,8 +30,11 @@ const Header: FC<HeaderProps> = ({ user, spaceName }: HeaderProps) => (
         </Text>
       </Flex>
       <h2>Welcome back, {user.firstName} 👋</h2>
-    </Flex>
-  </Flex>
+    </Box>
+    <Box style={{ lineHeight: 1 }}>
+      <Logo style={{ width: '110px' }} />
+    </Box>
+  </Container>
 );
 
 export default Header;
