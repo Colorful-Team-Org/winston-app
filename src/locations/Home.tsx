@@ -37,6 +37,8 @@ const Home = () => {
     getInstallations();
   }, [cma.appDefinition, sdk.ids.organization, sdk.ids.app]);
 
+  console.log(sdk.user);
+
   return (
     <>
       <GlobalStyles />

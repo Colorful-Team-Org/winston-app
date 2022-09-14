@@ -1,12 +1,10 @@
 import { Space } from '@/types/Space';
-import { Flex, Icon, Text, TextLink, Box } from '@contentful/f36-components';
+import { Flex, Icon, Text, TextLink } from '@contentful/f36-components';
 import * as icons from '@contentful/f36-icons';
 
 import { FC } from 'react';
 import { BiCube } from 'react-icons/bi';
 import SpaceEntry from './SpaceEntry';
-
-import styles from './styles';
 
 type SpaceContainerProps = {
   space: Space;
