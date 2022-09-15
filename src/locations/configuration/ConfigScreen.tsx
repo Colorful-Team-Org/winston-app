@@ -45,8 +45,7 @@ const ConfigScreen = () => {
     (async () => {
       // Get current parameters of the app.
       // If the app is not installed yet, `parameters` will be `null`.
-      const currentParameters: AppInstallationParameters | null =
-        await sdk.app.getParameters();
+      const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
 
       if (currentParameters) {
         setParameters(currentParameters);
@@ -65,11 +64,7 @@ const ConfigScreen = () => {
         <Heading>Configuration</Heading>
         <hr className={styles.splitter} />
       </Box>
-      <Box
-        style={{ textAlign: 'center' }}
-        paddingTop="spacingXl"
-        paddingBottom="spacingXl"
-      >
+      <Box style={{ textAlign: 'center' }} paddingTop="spacingXl" paddingBottom="spacingXl">
         <Logo width="50px" />
       </Box>
     </>
