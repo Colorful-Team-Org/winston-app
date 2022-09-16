@@ -36,7 +36,7 @@ const Home = () => {
         flexDirection="column"
         style={{ maxWidth: '960px', margin: '0 auto' }}
         fullWidth={true}
-        gap="spacingL"
+        gap="spacing2Xl"
       >
         {isLoading ? <Loader /> : showSpaces}
       </Flex>
