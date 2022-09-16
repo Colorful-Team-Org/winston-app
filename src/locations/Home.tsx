@@ -3,11 +3,10 @@ import { HomeExtensionSDK } from '@contentful/app-sdk';
 import { Flex } from '@contentful/f36-components';
 
 import tokens from '@contentful/f36-tokens';
-import Header from 'components/layout/header/Header';
-import Container from 'components/layout/Container';
+import Header from 'components/layout/Header';
 import useLocations from 'hooks/useLocations';
 import Loader from 'components/Loader';
-import SpaceRender from 'components/SpaceRender';
+import SpaceRender from 'components/renders/SpaceRender';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
@@ -32,7 +31,15 @@ const Home = () => {
       >
         <Header user={sdk.user} spaceId={sdk.ids.space} />
       </Flex>
-      <Container>{isLoading ? <Loader /> : showSpaces}</Container>
+      <Flex
+        as="main"
+        flexDirection="column"
+        style={{ maxWidth: '960px', margin: '0 auto' }}
+        fullWidth={true}
+        gap="spacingL"
+      >
+        {isLoading ? <Loader /> : showSpaces}
+      </Flex>
     </>
   );
 };

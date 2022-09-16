@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react';
-import Container from '../Container';
-import SpaceRender from 'components/SpaceRender';
+import SpaceRender from 'components/renders/SpaceRender';
+import { Flex } from '@contentful/f36-components';
 
 type HeaderProps = {
   user: any;
@@ -10,9 +10,14 @@ type HeaderProps = {
 
 const Header: FC<HeaderProps> = ({ user, spaceId }: HeaderProps) => {
   return (
-    <Container flexDirection="row">
+    <Flex
+      flexDirection="row"
+      fullWidth={true}
+      style={{ maxWidth: '960px', margin: '0 auto' }}
+      alignItems="center"
+    >
       <SpaceRender spaceId={spaceId} currentSpace={true} />
-    </Container>
+    </Flex>
   );
 };
 
