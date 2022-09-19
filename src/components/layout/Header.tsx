@@ -1,14 +1,15 @@
-import { FC, ReactNode } from 'react';
-import SpaceRender from 'components/renders/SpaceRender';
+import { FC } from 'react';
 import { Flex } from '@contentful/f36-components';
+import CurrentSpace from 'components/spaces/CurrentSpace';
 
 type HeaderProps = {
   user: any;
-  spaceId: string;
-  children?: ReactNode;
+  data: any;
 };
 
-const Header: FC<HeaderProps> = ({ user, spaceId }: HeaderProps) => {
+const Header: FC<HeaderProps> = (props: HeaderProps) => {
+  const { user, data } = props;
+
   return (
     <Flex
       flexDirection="row"
@@ -16,7 +17,7 @@ const Header: FC<HeaderProps> = ({ user, spaceId }: HeaderProps) => {
       style={{ maxWidth: '960px', margin: '0 auto' }}
       alignItems="center"
     >
-      <SpaceRender spaceId={spaceId} currentSpace={true} />
+      <CurrentSpace data={data.primary} />
     </Flex>
   );
 };

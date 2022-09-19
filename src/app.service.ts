@@ -13,6 +13,20 @@ const fetchSpace = async (
   }
 };
 
+const setupApp = async (cma: PlainClientAPI, options: FetchOptions) => {
+  const space = await cma.space.get({ spaceId: options.spaceId });
+  const entries = await cma.entry.getMany({ spaceId: options.spaceId, limit: 6 });
+  const users = await cma.user.getManyForSpace({ spaceId: options.spaceId, limit: 1000 });
+  const contentTypes = await cma.contentType.getMany({ spaceId: options.spaceId, limit: 1000 });
+
+  return {
+    space,
+    entries,
+    users,
+    contentTypes,
+  };
+};
+
 const fetchEntry = async (cma: PlainClientAPI, options: FetchOptions) => {
   const entry = await cma.entry.getMany({
     spaceId: options.spaceId,
@@ -51,4 +65,4 @@ const fetchContentType = async (
   return user;
 };
 
-export { fetchSpace, fetchEntry, fetchUser, fetchContentType };
+export { fetchSpace, fetchEntry, fetchUser, fetchContentType, setupApp };

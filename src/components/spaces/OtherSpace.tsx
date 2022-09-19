@@ -1,10 +1,14 @@
 import { Box, Flex, Icon, Text, TextLink } from '@contentful/f36-components';
-import { FC } from 'react';
-import { RenderSpaceProps } from 'types';
+import { FC, ReactNode } from 'react';
+import { CombinedSpaceProps } from 'types';
 import { BiCube } from 'react-icons/bi';
 import * as icons from '@contentful/f36-icons';
 
-const OtherSpace: FC<RenderSpaceProps> = (props: RenderSpaceProps) => {
+type OtherSpaceProps = CombinedSpaceProps & {
+  children?: ReactNode[];
+};
+
+const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
   const { children, space } = props;
 
   return space ? (

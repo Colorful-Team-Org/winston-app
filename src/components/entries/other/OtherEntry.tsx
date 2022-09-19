@@ -3,14 +3,14 @@ import { Box, Flex, Subheading, Text } from '@contentful/f36-components';
 
 import * as icons from '@contentful/f36-icons';
 import clsx from 'clsx';
-import { Entry } from 'types';
+// import { Entry } from 'types';
 
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 
 TimeAgo.addDefaultLocale(en);
 
-const OtherEntry = (props: Entry) => {
+const OtherEntry = (props: any) => {
   const { entry, user, contentType } = props;
   const timeAgo = new TimeAgo('en-US');
 

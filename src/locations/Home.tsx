@@ -3,18 +3,19 @@ import { HomeExtensionSDK } from '@contentful/app-sdk';
 import { Flex } from '@contentful/f36-components';
 
 import tokens from '@contentful/f36-tokens';
+
 import Header from 'components/layout/Header';
-import useLocations from 'hooks/useLocations';
-import Loader from 'components/Loader';
-import SpaceRender from 'components/renders/SpaceRender';
+import useSpaceData from 'hooks/useSpaceData';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
-  const { isLoading, spaceIds } = useLocations();
+  const { spacesData } = useSpaceData();
 
-  const showSpaces = spaceIds.map((s: string) => (
-    <SpaceRender key={s} currentSpace={false} spaceId={s} />
-  ));
+  console.log(spacesData);
+
+  // const showSpaces = spaceIds.map((s: string) => (
+  //   <SpaceRender key={s} currentSpace={false} spaceId={s} />
+  // ));
 
   return (
     <>
@@ -29,7 +30,7 @@ const Home = () => {
           background: '#fff',
         }}
       >
-        <Header user={sdk.user} spaceId={sdk.ids.space} />
+        <Header user={sdk.user} data={spacesData} />
       </Flex>
       <Flex
         as="main"
@@ -38,7 +39,7 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        {isLoading ? <Loader /> : showSpaces}
+        {/* {isLoading ? <Loader /> : showSpaces} */}
       </Flex>
     </>
   );

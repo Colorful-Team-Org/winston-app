@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { render } from 'react-dom';
 
 import { GlobalStyles } from '@contentful/f36-components';
 import { SDKProvider } from '@contentful/react-apps-toolkit';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import LocalhostWarning from './components/LocalhostWarning';
 import App from './App';
 
 const root = document.getElementById('root');
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+});
 
 if (process.env.NODE_ENV === 'development' && window.self === window.top) {
   // You can remove this if block before deploying your app
@@ -15,8 +25,12 @@ if (process.env.NODE_ENV === 'development' && window.self === window.top) {
 } else {
   render(
     <SDKProvider>
-      <GlobalStyles />
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={<>Loading...</>}>
+          <GlobalStyles />
+          <App />
+        </Suspense>
+      </QueryClientProvider>
     </SDKProvider>,
     root
   );
