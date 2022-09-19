@@ -1,17 +1,16 @@
 import { Box, Flex, Icon, Text } from '@contentful/f36-components';
 import { BiCube } from 'react-icons/bi';
 import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { CombinedSpaceProps } from 'types';
 
 type CurrentSpaceProps = {
   data: CombinedSpaceProps;
-  children?: ReactNode[];
 };
 
 const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
-  const { data, children } = props;
+  const { data } = props;
   const sdk = useSDK();
 
   return data ? (
@@ -33,7 +32,7 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
         </Box>
       </Flex>
       {data.entries.items.map(e => (
-        <>{e.fields.internalName['en-US']}</>
+        <div key={e.sys.id}>{e.fields.internalName['en-US']}</div>
       ))}
     </Flex>
   ) : (

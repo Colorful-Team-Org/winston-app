@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import LocalhostWarning from './components/LocalhostWarning';
 import App from './App';
+import Loader from 'components/Loader';
 
 const root = document.getElementById('root');
 
@@ -26,7 +27,13 @@ if (process.env.NODE_ENV === 'development' && window.self === window.top) {
   render(
     <SDKProvider>
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<>Loading...</>}>
+        <Suspense
+          fallback={
+            <>
+              <Loader />
+            </>
+          }
+        >
           <GlobalStyles />
           <App />
         </Suspense>

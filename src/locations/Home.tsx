@@ -6,16 +6,11 @@ import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
 import useSpaceData from 'hooks/useSpaceData';
+import OtherSpace from 'components/spaces/OtherSpace';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
   const { spacesData } = useSpaceData();
-
-  console.log(spacesData);
-
-  // const showSpaces = spaceIds.map((s: string) => (
-  //   <SpaceRender key={s} currentSpace={false} spaceId={s} />
-  // ));
 
   return (
     <>
@@ -39,7 +34,7 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        {/* {isLoading ? <Loader /> : showSpaces} */}
+        {spacesData && spacesData.others.map(s => <OtherSpace key={s.space.sys.id} data={s} />)}
       </Flex>
     </>
   );

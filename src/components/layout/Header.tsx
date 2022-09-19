@@ -8,7 +8,7 @@ type HeaderProps = {
 };
 
 const Header: FC<HeaderProps> = (props: HeaderProps) => {
-  const { user, data } = props;
+  const { data } = props;
 
   return (
     <Flex
