@@ -7,6 +7,10 @@ import Home from './locations/Home';
 import Sidebar from './locations/Sidebar';
 
 import './App.css';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+
+TimeAgo.addDefaultLocale(en);
 
 const ComponentLocationSettings = {
   [locations.LOCATION_APP_CONFIG]: ConfigScreen,

@@ -6,9 +6,6 @@ import * as icons from '@contentful/f36-icons';
 import styles from './styles';
 
 import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
-
-TimeAgo.addDefaultLocale(en);
 
 type CurrentEntryProps = {
   contentTypes: ContentTypeProps[];

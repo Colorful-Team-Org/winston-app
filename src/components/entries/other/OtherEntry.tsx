@@ -6,9 +6,6 @@ import clsx from 'clsx';
 // import { Entry } from 'types';
 
 import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
-
-TimeAgo.addDefaultLocale(en);
 
 const OtherEntry = (props: any) => {
   const { entry, user, contentType } = props;

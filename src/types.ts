@@ -1,11 +1,4 @@
-import {
-  EntryProps,
-  QueryParams,
-  SpaceProps,
-  ContentTypeProps,
-  UserProps,
-  CollectionProp,
-} from 'contentful-management';
+import { QueryParams, SpaceProps, ContentTypeProps, CollectionProp } from 'contentful-management';
 import { ReactNode } from 'react';
 
 type RenderSpaceProps = {
@@ -22,9 +15,7 @@ type FetchOptions = QueryParams & {
 
 type CombinedSpaceProps = {
   contentTypes: CollectionProp<ContentTypeProps>;
-  entries: CollectionProp<EntryProps>;
   space: SpaceProps;
-  users: CollectionProp<UserProps>;
 };
 
 export type { RenderSpaceProps, FetchOptions, CombinedSpaceProps };

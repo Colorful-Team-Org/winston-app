@@ -34,7 +34,7 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        {/* {spacesData && spacesData.others.map(s => <OtherSpace key={s.space.sys.id} data={s} />)} */}
+        {spacesData && spacesData.others.map(s => <OtherSpace key={s.space.sys.id} data={s} />)}
       </Flex>
     </>
   );
