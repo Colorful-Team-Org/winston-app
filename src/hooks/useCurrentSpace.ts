@@ -10,7 +10,8 @@ const useCurrentSpace = () => {
       spaceId: sdk.ids.space,
       // query: { 'sys.updatedBy.sys.id': sdk.user.sys.id + '2' },
       query: {
-        limit: 1,
+        limit: 6,
+        'sys.updatedBy.sys.id': sdk.user.sys.id,
       },
     });
 

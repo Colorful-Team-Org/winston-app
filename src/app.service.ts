@@ -28,25 +28,18 @@ const setupApp = async (cma: PlainClientAPI, options: FetchOptions) => {
 };
 
 const getEntries = async (cma: PlainClientAPI, options: FetchOptions) => {
-  // const space = await cma.space.get({ spaceId: options.spaceId });
-  const entries = await cma.entry.getMany({ spaceId: options.spaceId, limit: 6, ...options.query });
+  const entries = await cma.entry.getMany({
+    spaceId: options.spaceId,
+    query: { limit: 6, ...options.query },
+  });
   const users = await cma.user.getManyForSpace({
     spaceId: options.spaceId,
     limit: 1000,
   });
 
-  console.log({
-    spaceId: options.spaceId,
-    limit: 1000,
-    ...options.query,
-  });
-  // const contentTypes = await cma.contentType.getMany({ spaceId: options.spaceId, limit: 1000 });
-
   return {
-    // space,
     entries,
     users,
-    // contentTypes,
   };
 };
 

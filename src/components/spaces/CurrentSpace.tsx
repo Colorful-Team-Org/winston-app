@@ -1,4 +1,4 @@
-import { Box, Flex, Icon, Text } from '@contentful/f36-components';
+import { Box, Flex, Grid, Icon, Text } from '@contentful/f36-components';
 import { BiCube } from 'react-icons/bi';
 import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
 import { FC } from 'react';
@@ -34,17 +34,18 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
           <Logo style={{ width: '110px' }} />
         </Box>
       </Flex>
-      <Flex flexDirection="row" gap="spacingL" flexWrap="wrap">
+      {/* <Flex flexDirection="row" gap="spacingL" flexWrap="wrap" alignItems="flex-start"> */}
+      <Grid columns="repeat(3, minmax(0, 1fr))" columnGap="spacingL" rowGap="spacingL">
         {!isLoading &&
           currentSpaceData &&
           currentSpaceData.entries &&
           currentSpaceData.entries.items.map(e => (
             <>
               <CurrentEntry contentTypes={data.contentTypes.items} entry={e} />
-              <CurrentEntry contentTypes={data.contentTypes.items} entry={e} />
             </>
           ))}
-      </Flex>
+        {/* </Flex> */}
+      </Grid>
     </Flex>
   ) : (
     <>Space not found.</>
