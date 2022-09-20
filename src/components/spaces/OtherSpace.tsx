@@ -1,18 +1,35 @@
 import { Box, Flex, Icon, Text, TextLink } from '@contentful/f36-components';
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 import { CombinedSpaceProps } from 'types';
 import { BiCube } from 'react-icons/bi';
 import * as icons from '@contentful/f36-icons';
+import { useQuery } from '@tanstack/react-query';
+import { useCMA } from '@contentful/react-apps-toolkit';
+import { getEntries } from 'app.service';
+import OtherEntry from 'components/entries/other/OtherEntry';
+
+import styles from './OtherSpace.styles';
 
 type OtherSpaceProps = {
   data: CombinedSpaceProps;
-  children?: ReactNode[];
 };
 
 const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
-  const { children, data } = props;
+  const cma = useCMA();
 
-  return data.space ? (
+  const { data } = props;
+  const { data: spaceData, isLoading } = useQuery(['entries', data.space.sys.id], async () => {
+    const entryData = await getEntries(cma, {
+      spaceId: data.space.sys.id,
+      query: {
+        limit: 6,
+      },
+    });
+
+    return entryData;
+  });
+
+  return data.space && spaceData && !isLoading ? (
     <Box>
       <Flex
         as="div"
@@ -38,7 +55,20 @@ const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
         </TextLink>
       </Flex>
       <Flex flexDirection="column" gap="spacingS">
-        {children}
+        {spaceData.entries.items.length > 0 ? (
+          spaceData.entries.items.map(e => (
+            <OtherEntry
+              key={e.sys.id}
+              entry={e}
+              users={spaceData.users.items}
+              contentTypes={data.contentTypes.items}
+            />
+          ))
+        ) : (
+          <Box className={styles.empty} padding="spacingM">
+            Recently updated entries will show up here.
+          </Box>
+        )}
       </Flex>
     </Box>
   ) : (

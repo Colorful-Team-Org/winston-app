@@ -1,20 +1,35 @@
-import { Box, Flex, Grid, Icon, Text } from '@contentful/f36-components';
-import { BiCube } from 'react-icons/bi';
-import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
 import { FC } from 'react';
-import { useSDK } from '@contentful/react-apps-toolkit';
+import { Box, Flex, Grid, Icon, Text } from '@contentful/f36-components';
+import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
+import { useQuery } from '@tanstack/react-query';
+import { BiCube } from 'react-icons/bi';
+
+import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
 import { CombinedSpaceProps } from 'types';
-import useCurrentSpace from 'hooks/useCurrentSpace';
 import CurrentEntry from 'components/entries/current/CurrentEntry';
+import { getEntries } from 'app.service';
 
 type CurrentSpaceProps = {
   data: CombinedSpaceProps;
 };
 
 const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
-  const { data } = props;
   const sdk = useSDK();
-  const { data: currentSpaceData, isLoading } = useCurrentSpace();
+  const cma = useCMA();
+
+  const { data } = props;
+  const { data: currentSpaceData, isLoading } = useQuery(['entries', sdk.ids.space], async () => {
+    const entryData = await getEntries(cma, {
+      spaceId: sdk.ids.space,
+      // query: { 'sys.updatedBy.sys.id': sdk.user.sys.id + '2' },
+      query: {
+        limit: 6,
+        'sys.updatedBy.sys.id': sdk.user.sys.id,
+      },
+    });
+
+    return entryData;
+  });
 
   return data ? (
     <Flex fullWidth={true} flexDirection="column">
@@ -41,7 +56,7 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
           currentSpaceData.entries &&
           currentSpaceData.entries.items.map(e => (
             <>
-              <CurrentEntry contentTypes={data.contentTypes.items} entry={e} />
+              <CurrentEntry key={e.sys.id} contentTypes={data.contentTypes.items} entry={e} />
             </>
           ))}
         {/* </Flex> */}

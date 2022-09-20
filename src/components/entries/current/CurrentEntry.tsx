@@ -12,8 +12,8 @@ type CurrentEntryProps = {
   entry: EntryProps;
 };
 
-const CurrentEntry = (prop: CurrentEntryProps) => {
-  const { contentTypes, entry } = prop;
+const CurrentEntry = (props: CurrentEntryProps) => {
+  const { contentTypes, entry } = props;
   const timeAgo = new TimeAgo('en-US');
 
   const selectedContentType = contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id);

@@ -1,40 +1,61 @@
 import styles from './styles';
-import { Box, Flex, Subheading, Text } from '@contentful/f36-components';
+import { Box, Flex, Subheading, Text, Tooltip } from '@contentful/f36-components';
 
 import * as icons from '@contentful/f36-icons';
 import clsx from 'clsx';
 // import { Entry } from 'types';
 
 import TimeAgo from 'javascript-time-ago';
+import { ContentTypeProps, EntryProps, UserProps } from 'contentful-management';
 
-const OtherEntry = (props: any) => {
-  const { entry, user, contentType } = props;
+type OtherEntryProps = {
+  contentTypes: ContentTypeProps[];
+  entry: EntryProps;
+  users: UserProps[];
+};
+
+const OtherEntry = (props: OtherEntryProps) => {
+  const { contentTypes, entry, users } = props;
   const timeAgo = new TimeAgo('en-US');
 
+  const status = entry.sys.publishedAt ? 'Published' : entry.sys.archivedAt ? 'Archived' : 'Draft';
+  const selectedContentType = contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id);
+  const selectedUser = users.find(user => user.sys.id === entry.sys.updatedBy?.sys.id);
+
   return (
-    <Box as="div" className={clsx(styles.entry)} padding="spacingS">
+    <Box
+      as="a"
+      href={`https://app.contentful.com/spaces/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
+      target="_blank"
+      rel="nofollow"
+      className={clsx(styles.entry)}
+      padding="spacingS"
+    >
       <Flex gap="spacingM" alignItems="center">
-        <Box
-          className={styles['published']}
-          style={{
-            width: '10px',
-            height: '10px',
-            borderRadius: '50%',
-          }}
-        />
+        <Tooltip placement="top" id={entry.sys.id} content={status}>
+          <Box
+            className={styles[status]}
+            style={{
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              cursor: 'pointer',
+            }}
+          />
+        </Tooltip>
         <Box style={{ width: '40%' }}>
           <Subheading isTruncated marginBottom="none">
-            {entry.fields[contentType.displayField]['en-US']}
+            {selectedContentType ? entry.fields[selectedContentType.displayField]['en-US'] : 'N/A'}
           </Subheading>
         </Box>
         <Box style={{ width: '15%' }}>
           <Text as="div" isTruncated>
-            {contentType.name}
+            {selectedContentType ? selectedContentType.name : 'N/A'}
           </Text>
         </Box>
         <Box style={{ width: '15%' }}>
           <Flex fullWidth={true} alignItems="center" gap="spacingS">
-            {user.avatar && (
+            {selectedUser && selectedUser.avatarUrl && (
               <Box
                 style={{
                   width: '16px',
@@ -43,10 +64,12 @@ const OtherEntry = (props: any) => {
                   overflow: 'hidden',
                 }}
               >
-                <img src={user.avatar} alt={user.name} width="100%" />
+                <img src={selectedUser.avatarUrl} alt={selectedUser.firstName} width="100%" />
               </Box>
             )}
-            <Text isTruncated>{user.name}</Text>
+            <Text isTruncated>
+              {selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : 'N/A'}
+            </Text>
           </Flex>
         </Box>
         <Box style={{ flex: '1' }}>{timeAgo.format(Date.parse(entry.sys.updatedAt))}</Box>

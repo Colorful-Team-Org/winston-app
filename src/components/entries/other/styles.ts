@@ -27,11 +27,17 @@ const styles = {
       },
     },
   }),
-  published: css({
+  Published: css({
     background: tokens.green400,
+    boxShadow: '0px 0px 6px 0px rgba(0, 133, 57, 0.9)',
   }),
-  draft: css({
+  Archived: css({
     background: tokens.orange400,
+    boxShadow: '0px 0px 6px 0px rgba(240, 127, 35, 0.9)',
+  }),
+  Draft: css({
+    background: tokens.blue400,
+    boxShadow: '0px 0px 6px 0px rgba(3, 111, 227, 0.9)',
   }),
 };
 
