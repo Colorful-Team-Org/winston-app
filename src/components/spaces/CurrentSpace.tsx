@@ -4,6 +4,8 @@ import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
 import { FC } from 'react';
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { CombinedSpaceProps } from 'types';
+import useCurrentSpace from 'hooks/useCurrentSpace';
+import CurrentEntry from 'components/entries/current/CurrentEntry';
 
 type CurrentSpaceProps = {
   data: CombinedSpaceProps;
@@ -12,6 +14,7 @@ type CurrentSpaceProps = {
 const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
   const { data } = props;
   const sdk = useSDK();
+  const { data: currentSpaceData, isLoading } = useCurrentSpace();
 
   return data ? (
     <Flex fullWidth={true} flexDirection="column">
@@ -31,9 +34,17 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
           <Logo style={{ width: '110px' }} />
         </Box>
       </Flex>
-      {data.entries.items.map(e => (
-        <div key={e.sys.id}>{e.fields.internalName['en-US']}</div>
-      ))}
+      <Flex flexDirection="row" gap="spacingL" flexWrap="wrap">
+        {!isLoading &&
+          currentSpaceData &&
+          currentSpaceData.entries &&
+          currentSpaceData.entries.items.map(e => (
+            <>
+              <CurrentEntry contentTypes={data.contentTypes.items} entry={e} />
+              <CurrentEntry contentTypes={data.contentTypes.items} entry={e} />
+            </>
+          ))}
+      </Flex>
     </Flex>
   ) : (
     <>Space not found.</>

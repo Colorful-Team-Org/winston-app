@@ -15,15 +15,38 @@ const fetchSpace = async (
 
 const setupApp = async (cma: PlainClientAPI, options: FetchOptions) => {
   const space = await cma.space.get({ spaceId: options.spaceId });
-  const entries = await cma.entry.getMany({ spaceId: options.spaceId, limit: 6 });
-  const users = await cma.user.getManyForSpace({ spaceId: options.spaceId, limit: 1000 });
+  // const entries = await cma.entry.getMany({ spaceId: options.spaceId, limit: 6 });
+  // const users = await cma.user.getManyForSpace({ spaceId: options.spaceId, limit: 1000 });
   const contentTypes = await cma.contentType.getMany({ spaceId: options.spaceId, limit: 1000 });
 
   return {
     space,
+    // entries,
+    // users,
+    contentTypes,
+  };
+};
+
+const getEntries = async (cma: PlainClientAPI, options: FetchOptions) => {
+  // const space = await cma.space.get({ spaceId: options.spaceId });
+  const entries = await cma.entry.getMany({ spaceId: options.spaceId, limit: 6, ...options.query });
+  const users = await cma.user.getManyForSpace({
+    spaceId: options.spaceId,
+    limit: 1000,
+  });
+
+  console.log({
+    spaceId: options.spaceId,
+    limit: 1000,
+    ...options.query,
+  });
+  // const contentTypes = await cma.contentType.getMany({ spaceId: options.spaceId, limit: 1000 });
+
+  return {
+    // space,
     entries,
     users,
-    contentTypes,
+    // contentTypes,
   };
 };
 
@@ -65,4 +88,4 @@ const fetchContentType = async (
   return user;
 };
 
-export { fetchSpace, fetchEntry, fetchUser, fetchContentType, setupApp };
+export { fetchSpace, fetchEntry, fetchUser, fetchContentType, setupApp, getEntries };
