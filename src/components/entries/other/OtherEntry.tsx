@@ -45,7 +45,9 @@ const OtherEntry = (props: OtherEntryProps) => {
         </Tooltip>
         <Box style={{ width: '40%' }}>
           <Subheading isTruncated marginBottom="none">
-            {selectedContentType ? entry.fields[selectedContentType.displayField]['en-US'] : 'N/A'}
+            {selectedContentType && entry.fields[selectedContentType.displayField]
+              ? entry.fields[selectedContentType.displayField]['en-US']
+              : 'Untitled'}
           </Subheading>
         </Box>
         <Box style={{ width: '15%' }}>
