@@ -8,7 +8,7 @@ const useSpaceData = () => {
   const cma = useCMA();
   const { locations } = useLocations();
 
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     ['spaces'],
     async () => {
       const spaces = [];
@@ -31,6 +31,7 @@ const useSpaceData = () => {
 
   return {
     spacesData: data,
+    isLoading,
   };
 };
 

@@ -4,7 +4,6 @@ import tokens from '@contentful/f36-tokens';
 const styles = {
   body: css({
     height: 'auto',
-    minHeight: '65vh',
     margin: '0 auto',
     marginTop: tokens.spacingXl,
     padding: `${tokens.spacingXl} ${tokens.spacing2Xl}`,
@@ -30,6 +29,16 @@ const styles = {
     border: 0,
     height: '1px',
     backgroundColor: tokens.gray300,
+  }),
+  selectedCt: css({
+    backgroundColor: tokens.blue100,
+    border: `1px solid ${tokens.gray400}`,
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: '8px',
+    minWidth: 0,
+    width: '100%',
+    flexWrap: 'wrap',
   }),
 };
 

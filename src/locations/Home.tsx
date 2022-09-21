@@ -1,6 +1,6 @@
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { HomeExtensionSDK } from '@contentful/app-sdk';
-import { Flex } from '@contentful/f36-components';
+import { Box, Flex } from '@contentful/f36-components';
 
 import tokens from '@contentful/f36-tokens';
 
@@ -13,7 +13,7 @@ const Home = () => {
   const { spacesData } = useSpaceData();
 
   return (
-    <>
+    <Box paddingBottom="spacingL">
       <Flex
         as="header"
         flexDirection="row"
@@ -34,9 +34,10 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        {spacesData && spacesData.others.map(s => <OtherSpace key={s.space.sys.id} data={s} />)}
+        {spacesData &&
+          spacesData.others.map((s, i) => <OtherSpace key={`${s.space.sys.id}_${i}`} data={s} />)}
       </Flex>
-    </>
+    </Box>
   );
 };
 

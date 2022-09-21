@@ -8,32 +8,50 @@ import {
   Flex,
   Autocomplete,
   FormControl,
-  Checkbox,
+  TextInput,
+  Note,
+  Text,
+  TextLink,
+  Grid,
 } from '@contentful/f36-components';
+import * as icons from '@contentful/f36-icons';
+
 import { ReactComponent as Logo } from '../../images/colorful.svg';
 import useSpaceData from 'hooks/useSpaceData';
+import { SpaceProps, ContentTypeProps } from 'contentful-management';
+import { CombinedSpaceProps } from 'types';
 
-export interface AppInstallationParameters {}
+type SelectedContentType = {
+  spaceName: string;
+} & ContentTypeProps;
+
+export interface AppInstallationParameters {
+  selectedContentTypes: SelectedContentType[] | null;
+  algoliaApiKey: string | null;
+  algoliaIndexName: string | null;
+}
+
+interface OptionsProps {
+  spaces: CombinedSpaceProps[];
+  contentTypes: ContentTypeProps[];
+  selectedSpace: SpaceProps | null;
+}
 
 const ConfigScreen = () => {
-  const [parameters, setParameters] = useState<AppInstallationParameters>({});
+  const [parameters, setParameters] = useState<AppInstallationParameters>({
+    selectedContentTypes: [],
+    algoliaApiKey: null,
+    algoliaIndexName: null,
+  });
+  const [configOptions, setConfigOptions] = useState<OptionsProps>({
+    spaces: [],
+    contentTypes: [],
+    selectedSpace: null,
+  });
   const sdk = useSDK<AppExtensionSDK>();
-  const { spacesData } = useSpaceData();
-  console.log(spacesData);
-
-  const [selectedSpace, setSelectedSpace] = useState<any>(null);
-  const [selectedCt, setSelectedCt] = useState<any>([]);
-
-  const [spaces, setSpaces] = useState<any>([]);
-  const [cts, setCts] = useState<any>([]);
+  const { spacesData, isLoading } = useSpaceData();
 
   const onConfigure = useCallback(async () => {
-    // This method will be called when a user clicks on "Install"
-    // or "Save" in the configuration screen.
-    // for more details see https://www.contentful.com/developers/docs/extensibility/ui-extensions/sdk-reference/#register-an-app-configuration-hook
-
-    // Get current the state of EditorInterface and other entities
-    // related to this app installation
     const currentState = await sdk.app.getCurrentState();
 
     return {
@@ -44,6 +62,15 @@ const ConfigScreen = () => {
       targetState: currentState,
     };
   }, [parameters, sdk]);
+
+  useEffect(() => {
+    if (!spacesData || spacesData.others.length === 0) return;
+
+    setConfigOptions(config => ({
+      ...config,
+      spaces: spacesData.others,
+    }));
+  }, [spacesData]);
 
   useEffect(() => {
     // `onConfigure` allows to configure a callback to be
@@ -68,58 +95,138 @@ const ConfigScreen = () => {
     })();
   }, [sdk]);
 
-  useEffect(() => {
-    if (!spacesData?.others) return;
+  const handleSelectSpace = useCallback(
+    (item: CombinedSpaceProps) => {
+      setConfigOptions({
+        ...configOptions,
+        selectedSpace: item.space,
+        contentTypes: item.contentTypes.items,
+      });
+    },
+    [configOptions]
+  );
 
-    setSpaces(spacesData.others.map(item => ({ name: item.space.name, value: item.space.sys.id })));
-  }, [spacesData]);
+  const handleSpaceCleared = useCallback(
+    (item: string) => {
+      if (!item || item === '' || typeof item === 'undefined') {
+        setConfigOptions({
+          ...configOptions,
+          selectedSpace: null,
+          contentTypes: [],
+        });
+      }
+    },
+    [configOptions]
+  );
 
-  const handleSelectSpace = (item: { name: string; value: string }) => {
-    const ct = spacesData?.others.find(
-      (item: any) => item.space.sys.id === selectedSpace
-    )?.contentTypes;
-    setSelectedSpace(item.value);
-    console.log(ct);
-    // setCts(ct?.items.map(item => item.name));
-  };
+  const handleSelectedContentType = useCallback(
+    (item: ContentTypeProps) => {
+      setParameters({
+        ...parameters,
+        selectedContentTypes: [
+          ...(parameters.selectedContentTypes ? parameters.selectedContentTypes : []),
+          ...[
+            {
+              ...item,
+              spaceName: configOptions.selectedSpace!.name,
+            },
+          ],
+        ],
+      });
+    },
+    [parameters, configOptions]
+  );
+
+  const handleCtRemove = useCallback(
+    (id: string) => {
+      setParameters({
+        ...parameters,
+        selectedContentTypes: parameters.selectedContentTypes!.filter(ct => ct.sys.id !== id),
+      });
+    },
+    [parameters]
+  );
 
   return (
     <>
       <Box className={styles.background} />
       <Box className={styles.body}>
-        <Heading>Configuration</Heading>
-        <hr className={styles.splitter} />
+        {configOptions.spaces.length === 0 && !isLoading && (
+          <Box marginBottom="spacingM">
+            <Note variant="negative">
+              This app needs to be installed in at least two spaces to work properly.
+            </Note>
+          </Box>
+        )}
+        <Heading as="h2">Configuration</Heading>
         <Flex flexDirection="row" gap="spacingXl">
-          <FormControl
-            style={{ flex: 1 }}
-            isDisabled={spaces.length === 0}
-            isInvalid={spaces.length === 0}
-          >
+          <FormControl style={{ flex: 1 }} isDisabled={configOptions.spaces.length === 0}>
             <FormControl.Label>Related Spaces:</FormControl.Label>
             <Autocomplete
-              items={spaces}
+              items={configOptions.spaces}
               placeholder="Select Spaces"
-              isDisabled={spaces.length === 0}
+              isDisabled={configOptions.spaces.length === 0}
               onSelectItem={handleSelectSpace}
-              itemToString={(item: any) => item.id}
-              renderItem={(item: any) => item.name}
+              itemToString={(item: any) => item.space.name}
+              renderItem={(item: any) => item.space.name}
+              onInputValueChange={handleSpaceCleared}
             />
-            {spaces.length === 0 && (
-              <FormControl.ValidationMessage>
-                Install the app in more than one space
-              </FormControl.ValidationMessage>
-            )}
           </FormControl>
-          <FormControl style={{ flex: 1 }} isDisabled={!selectedSpace}>
+          <FormControl style={{ flex: 1 }} isDisabled={!configOptions.selectedSpace}>
             <FormControl.Label>Content Types:</FormControl.Label>
             <Autocomplete
-              items={cts}
-              onSelectItem={() => {}}
+              items={configOptions.contentTypes}
+              onSelectItem={handleSelectedContentType}
               placeholder="Select Content Types"
-              isDisabled={!selectedSpace}
+              isDisabled={!configOptions.selectedSpace}
+              itemToString={(item: any) => item.name}
+              renderItem={(item: any) => item.name}
+              clearAfterSelect={true}
             />
           </FormControl>
         </Flex>
+        {parameters.selectedContentTypes && (
+          <Grid columns="repeat(3, minmax(0, 1fr))" columnGap="spacingS" rowGap="spacingS">
+            {parameters.selectedContentTypes.map((item, i) => (
+              <Box key={`${item.sys.id}_${i}`} className={styles.selectedCt} padding="spacingXs">
+                <Flex alignItems="center" gap="spacingM" style={{ width: '100%' }}>
+                  <Box
+                    style={{
+                      flex: '1',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '5px',
+                      minWidth: 0,
+                    }}
+                  >
+                    <Text fontWeight="fontWeightDemiBold">{item.name}</Text>
+                    <Text fontSize="fontSizeS" as="div" isTruncated>
+                      {item.spaceName}
+                    </Text>
+                  </Box>
+                  <TextLink
+                    as="button"
+                    variant="secondary"
+                    onClick={() => handleCtRemove(item.sys.id)}
+                    style={{ lineHeight: 1 }}
+                  >
+                    <icons.CloseIcon style={{ lineHeight: 1 }} variant="muted" />
+                  </TextLink>
+                </Flex>
+              </Box>
+            ))}
+          </Grid>
+        )}
+        <hr className={styles.splitter} />
+        <Heading as="h2">Algolia Configuration</Heading>
+        <FormControl>
+          <FormControl.Label>Algolia API Key:</FormControl.Label>
+          <TextInput />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Algolia Index Name:</FormControl.Label>
+          <TextInput />
+        </FormControl>
       </Box>
       <Box style={{ textAlign: 'center' }} paddingTop="spacingXl" paddingBottom="spacingXl">
         <Logo width="50px" />
