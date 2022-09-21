@@ -27,6 +27,7 @@ type SelectedContentType = {
 
 export interface AppInstallationParameters {
   selectedContentTypes: SelectedContentType[] | null;
+  selectedSpaces: string[];
   algoliaApiKey: string | null;
   algoliaIndexName: string | null;
 }
@@ -37,9 +38,13 @@ interface OptionsProps {
   selectedSpace: SpaceProps | null;
 }
 
+const uniqueSpaceIds = (contentTypes: SelectedContentType[]) =>
+  Array.from(new Set(contentTypes.map(ct => ct.sys.space.sys.id)));
+
 const ConfigScreen = () => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({
     selectedContentTypes: [],
+    selectedSpaces: [],
     algoliaApiKey: null,
     algoliaIndexName: null,
   });
@@ -121,17 +126,20 @@ const ConfigScreen = () => {
 
   const handleSelectedContentType = useCallback(
     (item: ContentTypeProps) => {
+      const newSelectedContentTypes = [
+        ...(parameters.selectedContentTypes ? parameters.selectedContentTypes : []),
+        ...[
+          {
+            ...item,
+            spaceName: configOptions.selectedSpace!.name,
+          },
+        ],
+      ];
+
       setParameters({
         ...parameters,
-        selectedContentTypes: [
-          ...(parameters.selectedContentTypes ? parameters.selectedContentTypes : []),
-          ...[
-            {
-              ...item,
-              spaceName: configOptions.selectedSpace!.name,
-            },
-          ],
-        ],
+        selectedContentTypes: newSelectedContentTypes,
+        selectedSpaces: uniqueSpaceIds(newSelectedContentTypes),
       });
     },
     [parameters, configOptions]
@@ -139,9 +147,14 @@ const ConfigScreen = () => {
 
   const handleCtRemove = useCallback(
     (id: string) => {
+      const newSelectedContentTypes = parameters.selectedContentTypes!.filter(
+        ct => ct.sys.id !== id
+      );
+
       setParameters({
         ...parameters,
-        selectedContentTypes: parameters.selectedContentTypes!.filter(ct => ct.sys.id !== id),
+        selectedContentTypes: newSelectedContentTypes,
+        selectedSpaces: uniqueSpaceIds(newSelectedContentTypes),
       });
     },
     [parameters]
