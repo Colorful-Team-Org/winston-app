@@ -8,13 +8,13 @@ import clsx from 'clsx';
 import TimeAgo from 'javascript-time-ago';
 import { ContentTypeProps, EntryProps, UserProps } from 'contentful-management';
 
-type OtherEntryProps = {
+type DefaultEntryProps = {
   contentTypes: ContentTypeProps[];
   entry: EntryProps;
   users: UserProps[];
 };
 
-const OtherEntry = (props: OtherEntryProps) => {
+const DefaultEntry = (props: DefaultEntryProps) => {
   const { contentTypes, entry, users } = props;
   const timeAgo = new TimeAgo('en-US');
 
@@ -82,4 +82,4 @@ const OtherEntry = (props: OtherEntryProps) => {
     </Box>
   );
 };
-export default OtherEntry;
+export default DefaultEntry;

@@ -3,31 +3,18 @@ import { FC } from 'react';
 import { CombinedSpaceProps } from 'types';
 import { BiCube } from 'react-icons/bi';
 import * as icons from '@contentful/f36-icons';
-import { useQuery } from '@tanstack/react-query';
-import { useCMA } from '@contentful/react-apps-toolkit';
-import { getEntries } from 'app.service';
-import OtherEntry from 'components/entries/other/OtherEntry';
+import DefaultEntry from 'components/entries/default/DefaultEntry';
 
-import styles from './OtherSpace.styles';
+import styles from './styles';
+import useEntries from 'core/hooks/useEntries';
 
 type OtherSpaceProps = {
   data: CombinedSpaceProps;
 };
 
 const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
-  const cma = useCMA();
-
   const { data } = props;
-  const { data: spaceData, isLoading } = useQuery(['entries', data.space.sys.id], async () => {
-    const entryData = await getEntries(cma, {
-      spaceId: data.space.sys.id,
-      query: {
-        limit: 6,
-      },
-    });
-
-    return entryData;
-  });
+  const { data: spaceData, isLoading } = useEntries(data.space.sys.id);
 
   return data.space && spaceData && !isLoading ? (
     <Box>
@@ -57,7 +44,7 @@ const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
       <Flex flexDirection="column" gap="spacingS">
         {spaceData.entries.items.length > 0 ? (
           spaceData.entries.items.map(e => (
-            <OtherEntry
+            <DefaultEntry
               key={e.sys.id}
               entry={e}
               users={spaceData.users.items}

@@ -1,13 +1,12 @@
 import { FC } from 'react';
 import { Box, Flex, Grid, Icon, Text } from '@contentful/f36-components';
-import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
-import { useQuery } from '@tanstack/react-query';
+import { useSDK } from '@contentful/react-apps-toolkit';
 import { BiCube } from 'react-icons/bi';
 
 import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
 import { CombinedSpaceProps } from 'types';
 import CurrentEntry from 'components/entries/current/CurrentEntry';
-import { getEntries } from 'app.service';
+import useEntries from 'core/hooks/useEntries';
 
 type CurrentSpaceProps = {
   data: CombinedSpaceProps;
@@ -15,21 +14,9 @@ type CurrentSpaceProps = {
 
 const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
   const sdk = useSDK();
-  const cma = useCMA();
 
   const { data } = props;
-  const { data: currentSpaceData, isLoading } = useQuery(['entries', sdk.ids.space], async () => {
-    const entryData = await getEntries(cma, {
-      spaceId: sdk.ids.space,
-      // query: { 'sys.updatedBy.sys.id': sdk.user.sys.id + '2' },
-      query: {
-        limit: 6,
-        'sys.updatedBy.sys.id': sdk.user.sys.id,
-      },
-    });
-
-    return entryData;
-  });
+  const { data: currentSpaceData, isLoading } = useEntries(data.space.sys.id, true);
 
   return data ? (
     <Flex fullWidth={true} flexDirection="column">

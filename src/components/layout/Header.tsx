@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Flex } from '@contentful/f36-components';
-import CurrentSpace from 'components/spaces/CurrentSpace';
+import CurrentSpace from 'components/spaces/current/CurrentSpace';
 
 type HeaderProps = {
   user: any;

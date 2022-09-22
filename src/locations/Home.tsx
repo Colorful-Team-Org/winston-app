@@ -5,8 +5,8 @@ import { Box, Flex } from '@contentful/f36-components';
 import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
-import useSpaceData from 'hooks/useSpaceData';
-import OtherSpace from 'components/spaces/OtherSpace';
+import useSpaceData from 'core/hooks/useSpaceData';
+import OtherSpace from 'components/spaces/default/DefaultSpace';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();

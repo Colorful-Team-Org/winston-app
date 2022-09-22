@@ -17,7 +17,7 @@ import {
 import * as icons from '@contentful/f36-icons';
 
 import { ReactComponent as Logo } from '../../images/colorful.svg';
-import useSpaceData from 'hooks/useSpaceData';
+import useSpaceData from 'core/hooks/useSpaceData';
 import { SpaceProps, ContentTypeProps } from 'contentful-management';
 import { CombinedSpaceProps } from 'types';
 
