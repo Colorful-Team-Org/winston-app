@@ -28,8 +28,8 @@ type SelectedContentType = {
 export interface AppInstallationParameters {
   selectedContentTypes: SelectedContentType[] | null;
   selectedSpaces: string[];
-  algoliaApiKey: string | null;
-  algoliaIndexName: string | null;
+  algoliaApiKey: string | undefined;
+  algoliaIndexName: string | undefined;
 }
 
 interface OptionsProps {
@@ -45,8 +45,8 @@ const ConfigScreen = () => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({
     selectedContentTypes: [],
     selectedSpaces: [],
-    algoliaApiKey: null,
-    algoliaIndexName: null,
+    algoliaApiKey: undefined,
+    algoliaIndexName: undefined,
   });
   const [configOptions, setConfigOptions] = useState<OptionsProps>({
     spaces: [],
@@ -234,11 +234,27 @@ const ConfigScreen = () => {
         <Heading as="h2">Algolia Configuration</Heading>
         <FormControl>
           <FormControl.Label>Algolia API Key:</FormControl.Label>
-          <TextInput />
+          <TextInput
+            value={parameters.algoliaApiKey}
+            onChange={e => {
+              setParameters({
+                ...parameters,
+                algoliaApiKey: e.target.value,
+              });
+            }}
+          />
         </FormControl>
         <FormControl>
           <FormControl.Label>Algolia Index Name:</FormControl.Label>
-          <TextInput />
+          <TextInput
+            value={parameters.algoliaIndexName}
+            onChange={e => {
+              setParameters({
+                ...parameters,
+                algoliaIndexName: e.target.value,
+              });
+            }}
+          />
         </FormControl>
       </Box>
       <Box style={{ textAlign: 'center' }} paddingTop="spacingXl" paddingBottom="spacingXl">
