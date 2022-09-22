@@ -54,7 +54,7 @@ const ConfigScreen = () => {
     selectedSpace: null,
   });
   const sdk = useSDK<AppExtensionSDK>();
-  const { spacesData, isLoading } = useSpaceData();
+  const { spacesData, isLoading } = useSpaceData(true);
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();

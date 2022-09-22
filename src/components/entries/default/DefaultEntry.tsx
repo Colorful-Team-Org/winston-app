@@ -25,7 +25,7 @@ const DefaultEntry = (props: DefaultEntryProps) => {
   return (
     <Box
       as="a"
-      href={`${process.env.REACT_APP_CONTENTFUL_URL}/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
+      href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
       target="_blank"
       rel="nofollow"
       className={clsx(styles.entry)}

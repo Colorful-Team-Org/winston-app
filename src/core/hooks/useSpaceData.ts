@@ -1,14 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
 import { setupApp } from 'app.service';
+import useLocations from 'core/hooks/useLocations';
 
-const useSpaceData = () => {
+const useSpaceData = (useInstallLocations: boolean = false) => {
   const sdk = useSDK();
   const cma = useCMA();
+  const { locations: installLocations } = useLocations();
 
   const { data, isLoading } = useQuery(['spaces'], async () => {
     const spaces = [];
-    const locations = [sdk.ids.space, ...sdk.parameters.installation.selectedSpaces];
+    const locations = useInstallLocations
+      ? installLocations
+      : [sdk.ids.space, ...sdk.parameters.installation.selectedSpaces];
 
     for (const spaceId of locations!) {
       const spaceData = await setupApp(cma, { spaceId });
