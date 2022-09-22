@@ -42,13 +42,11 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
           currentSpaceData &&
           currentSpaceData.entries &&
           currentSpaceData.entries.items.map((e: any, i: number) => (
-            <>
-              <CurrentEntry
-                key={`${e.sys.id}_${i}`}
-                contentTypes={data.contentTypes.items}
-                entry={e}
-              />
-            </>
+            <CurrentEntry
+              key={`${e.sys.id}_${i}`}
+              contentTypes={data.contentTypes.items}
+              entry={e}
+            />
           ))}
         {/* </Flex> */}
       </Grid>

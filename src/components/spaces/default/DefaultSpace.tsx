@@ -1,5 +1,5 @@
 import { Box, Flex, Icon, Text, TextLink } from '@contentful/f36-components';
-import { FC } from 'react';
+import { FC, Suspense } from 'react';
 import { CombinedSpaceProps } from 'types';
 import { BiCube } from 'react-icons/bi';
 import * as icons from '@contentful/f36-icons';
@@ -42,22 +42,24 @@ const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
         </TextLink>
       </Flex>
       <Flex flexDirection="column" gap="spacingS">
-        {spaceData.entries.items.length > 0 ? (
-          spaceData.entries.items
-            .slice(0, 6)
-            .map((e: any) => (
-              <DefaultEntry
-                key={e.sys.id}
-                entry={e}
-                users={spaceData.users.items}
-                contentTypes={data.contentTypes.items}
-              />
-            ))
-        ) : (
-          <Box className={styles.empty} padding="spacingM">
-            Recently updated entries will show up here.
-          </Box>
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          {spaceData.entries.items.length > 0 ? (
+            spaceData.entries.items
+              .slice(0, 6)
+              .map((e: any) => (
+                <DefaultEntry
+                  key={e.sys.id}
+                  entry={e}
+                  users={spaceData.users.items}
+                  contentTypes={data.contentTypes.items}
+                />
+              ))
+          ) : (
+            <Box className={styles.empty} padding="spacingM">
+              Recently updated entries will show up here.
+            </Box>
+          )}
+        </Suspense>
       </Flex>
     </Box>
   ) : (
