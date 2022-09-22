@@ -21,7 +21,8 @@ type CombinedSpaceProps = {
   space: SpaceProps;
 };
 
-export type CmaClientState = {
+export type AppStoreState = {
+  sdk: KnownSDK | undefined;
   cma: PlainClientAPI | undefined;
   setCma: (cma: PlainClientAPI) => void;
 };

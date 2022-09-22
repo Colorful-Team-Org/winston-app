@@ -7,6 +7,7 @@ import tokens from '@contentful/f36-tokens';
 import Header from 'components/layout/Header';
 import useSpaceData from 'core/hooks/useSpaceData';
 import OtherSpace from 'components/spaces/default/DefaultSpace';
+import { Suspense } from 'react';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
@@ -28,7 +29,9 @@ const Home = () => {
           background: '#fff',
         }}
       >
-        <Header user={sdk.user} data={spacesData} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Header user={sdk.user} data={spacesData} />
+        </Suspense>
       </Flex>
       <Flex
         as="main"
@@ -37,35 +40,37 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        {spacesData && spacesData.others.length > 0 ? (
-          spacesData.others.map((s, i) => <OtherSpace key={`${s.space.sys.id}_${i}`} data={s} />)
-        ) : (
-          <Flex
-            flexDirection="column"
-            padding="spacingM"
-            justifyContent="center"
-            alignItems="center"
-            style={{
-              background: '#fff',
-              border: `solid 1px ${tokens.gray300}`,
-              borderRadius: '8px',
-              textAlign: 'center',
-            }}
-          >
-            <Paragraph>
-              To see recently updated related spaces, please configure the dashboard app by adding
-              spaces and content types.
-            </Paragraph>
-            <Button
-              as="a"
-              href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
-              target="_blank"
-              rel="noopener noreferrer"
+        <Suspense fallback={<div>Loading...</div>}>
+          {spacesData && spacesData.others.length > 0 ? (
+            spacesData.others.map((s, i) => <OtherSpace key={`${s.space.sys.id}_${i}`} data={s} />)
+          ) : (
+            <Flex
+              flexDirection="column"
+              padding="spacingM"
+              justifyContent="center"
+              alignItems="center"
+              style={{
+                background: '#fff',
+                border: `solid 1px ${tokens.gray300}`,
+                borderRadius: '8px',
+                textAlign: 'center',
+              }}
             >
-              Get Started
-            </Button>
-          </Flex>
-        )}
+              <Paragraph>
+                To see recently updated related spaces, please configure the dashboard app by adding
+                spaces and content types.
+              </Paragraph>
+              <Button
+                as="a"
+                href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Started
+              </Button>
+            </Flex>
+          )}
+        </Suspense>
       </Flex>
     </Box>
   );

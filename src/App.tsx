@@ -5,7 +5,7 @@ import { createClient } from 'contentful-management';
 
 import ConfigScreen from './locations/configuration/ConfigScreen';
 import Home from './locations/Home';
-import { setState as setCmaState } from 'core/stores/cmaStore';
+import { setState as setCmaState } from 'core/stores/appStore';
 
 import './App.css';
 import TimeAgo from 'javascript-time-ago';
@@ -33,7 +33,7 @@ init(sdk => {
     }
   );
 
-  setCmaState({ cma });
+  setCmaState({ cma, sdk });
 });
 
 const App = () => {

@@ -41,7 +41,7 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
         {!isLoading &&
           currentSpaceData &&
           currentSpaceData.entries &&
-          currentSpaceData.entries.items.map((e, i) => (
+          currentSpaceData.entries.items.map((e: any, i: number) => (
             <>
               <CurrentEntry
                 key={`${e.sys.id}_${i}`}

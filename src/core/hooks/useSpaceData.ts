@@ -11,7 +11,7 @@ const useSpaceData = (useInstallLocations: boolean = false) => {
     const spaces = [];
     const locations = useInstallLocations
       ? installLocations
-      : [sdk.ids.space, ...sdk.parameters.installation.selectedSpaces];
+      : [sdk.ids.space, ...(sdk.parameters.installation.selectedSpaces ?? [])];
 
     for (const spaceId of locations!) {
       const spaceData = await setupApp({ spaceId });

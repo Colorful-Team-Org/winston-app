@@ -43,14 +43,16 @@ const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
       </Flex>
       <Flex flexDirection="column" gap="spacingS">
         {spaceData.entries.items.length > 0 ? (
-          spaceData.entries.items.map(e => (
-            <DefaultEntry
-              key={e.sys.id}
-              entry={e}
-              users={spaceData.users.items}
-              contentTypes={data.contentTypes.items}
-            />
-          ))
+          spaceData.entries.items
+            .slice(0, 6)
+            .map((e: any) => (
+              <DefaultEntry
+                key={e.sys.id}
+                entry={e}
+                users={spaceData.users.items}
+                contentTypes={data.contentTypes.items}
+              />
+            ))
         ) : (
           <Box className={styles.empty} padding="spacingM">
             Recently updated entries will show up here.
