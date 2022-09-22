@@ -25,7 +25,7 @@ const OtherEntry = (props: OtherEntryProps) => {
   return (
     <Box
       as="a"
-      href={`https://app.contentful.com/spaces/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
+      href={`${process.env.REACT_APP_CONTENTFUL_URL}/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
       target="_blank"
       rel="nofollow"
       className={clsx(styles.entry)}

@@ -19,7 +19,11 @@ const CurrentEntry = (props: CurrentEntryProps) => {
   const selectedContentType = contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id);
 
   return entry && selectedContentType ? (
-    <Box as="a" href="#" className={styles.entry}>
+    <Box
+      as="a"
+      href={`${process.env.REACT_APP_CONTENTFUL_URL}/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
+      className={styles.entry}
+    >
       <Flex flexDirection="column">
         <Flex flexDirection="row" gap="spacingM" padding="spacingM">
           <icons.EntryIcon variant="muted" className={styles.icon} size="medium" />

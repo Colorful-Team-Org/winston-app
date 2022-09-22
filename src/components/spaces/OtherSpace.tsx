@@ -45,7 +45,7 @@ const OtherSpace: FC<OtherSpaceProps> = (props: OtherSpaceProps) => {
           </Text>
         </Flex>
         <TextLink
-          href={`https://app.contentful.com/spaces/${data.space.sys.id}/content`}
+          href={`${process.env.REACT_APP_CONTENTFUL_URL}/${data.space.sys.id}/content`}
           icon={<icons.ExternalLinkIcon />}
           variant="primary"
           target="_blank"
