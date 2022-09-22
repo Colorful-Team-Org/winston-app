@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useCMA, useSDK } from '@contentful/react-apps-toolkit';
+import { useSDK } from '@contentful/react-apps-toolkit';
 import { setupApp } from 'app.service';
 import useLocations from 'core/hooks/useLocations';
 
 const useSpaceData = (useInstallLocations: boolean = false) => {
   const sdk = useSDK();
-  const cma = useCMA();
   const { locations: installLocations } = useLocations();
 
   const { data, isLoading } = useQuery(['spaces'], async () => {
@@ -15,7 +14,7 @@ const useSpaceData = (useInstallLocations: boolean = false) => {
       : [sdk.ids.space, ...sdk.parameters.installation.selectedSpaces];
 
     for (const spaceId of locations!) {
-      const spaceData = await setupApp(cma, { spaceId });
+      const spaceData = await setupApp({ spaceId });
       spaces.push(spaceData);
     }
 

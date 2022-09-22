@@ -13,6 +13,7 @@ type RenderSpaceProps = {
 
 type FetchOptions = QueryParams & {
   spaceId: string;
+  sdk?: KnownSDK;
 };
 
 type CombinedSpaceProps = {
