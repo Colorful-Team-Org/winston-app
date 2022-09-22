@@ -12,6 +12,9 @@ const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
   const { spacesData } = useSpaceData();
 
+  console.log(sdk.locales);
+  console.log(sdk.parameters);
+
   return (
     <Box paddingBottom="spacingL">
       <Flex

@@ -16,7 +16,7 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
   const sdk = useSDK();
 
   const { data } = props;
-  const { data: currentSpaceData, isLoading } = useEntries(data.space.sys.id, true);
+  const { data: currentSpaceData, isLoading } = useEntries(sdk.ids.space, true);
 
   return data ? (
     <Flex fullWidth={true} flexDirection="column">
