@@ -1,20 +1,39 @@
+import { Suspense, useEffect, useState } from 'react';
+
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { HomeExtensionSDK } from '@contentful/app-sdk';
-import { Box, Button, Flex, Paragraph } from '@contentful/f36-components';
+import { Box, Button, Flex, Paragraph, TextInput } from '@contentful/f36-components';
+import algoliasearch from 'algoliasearch/lite';
+// import * as icons from '@contentful/f36-icons';
 
 import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
 import useSpaceData from 'core/hooks/useSpaceData';
 import OtherSpace from 'components/spaces/default/DefaultSpace';
-import { Suspense } from 'react';
+import { SearchClient } from 'algoliasearch/lite';
+import { InstantSearch } from 'react-instantsearch-hooks-web';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
   const { spacesData } = useSpaceData();
+  const [algolia, setAlgolia] = useState<SearchClient | null>(null);
 
-  console.log(sdk.locales);
-  console.log(sdk.parameters);
+  useEffect(() => {
+    if (
+      !sdk.parameters.installation.algoliaApiKey &&
+      !sdk.parameters.installation.algoliaId &&
+      !sdk.parameters.installation.algoliaIndexName
+    )
+      return;
+    console.log(sdk.parameters.installation.algoliaIndexName);
+    setAlgolia(
+      algoliasearch(
+        sdk.parameters.installation.algoliaId,
+        sdk.parameters.installation.algoliaApiKey
+      )
+    );
+  }, [sdk.parameters]);
 
   return (
     <Box paddingBottom="spacingL">
@@ -41,6 +60,20 @@ const Home = () => {
         gap="spacing2Xl"
       >
         <Suspense fallback={<div>Loading...</div>}>
+          {algolia && (
+            <InstantSearch
+              searchClient={algolia}
+              indexName={sdk.parameters.installation.algoliaIndexName}
+            >
+              {/* <SearchBox /> */}
+            </InstantSearch>
+            // <TextInput
+            //   aria-label="Algolia Search"
+            //   id="algolia-search"
+            //   placeholder="Search for entries"
+            //   icon={<icons.SearchTrimmedIcon />}
+            // />
+          )}
           {spacesData && spacesData.others.length > 0 ? (
             spacesData.others.map((s, i) => <OtherSpace key={`${s.space.sys.id}_${i}`} data={s} />)
           ) : (

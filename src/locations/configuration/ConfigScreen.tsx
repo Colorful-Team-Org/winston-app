@@ -28,8 +28,9 @@ type SelectedContentType = {
 export interface AppInstallationParameters {
   selectedContentTypes: SelectedContentType[] | null;
   selectedSpaces: string[];
-  algoliaApiKey: string | undefined;
-  algoliaIndexName: string | undefined;
+  algoliaApiKey: string;
+  algoliaId: string;
+  algoliaIndexName: string;
 }
 
 interface OptionsProps {
@@ -45,8 +46,9 @@ const ConfigScreen = () => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({
     selectedContentTypes: [],
     selectedSpaces: [],
-    algoliaApiKey: undefined,
-    algoliaIndexName: undefined,
+    algoliaApiKey: '',
+    algoliaId: '',
+    algoliaIndexName: '',
   });
   const [configOptions, setConfigOptions] = useState<OptionsProps>({
     spaces: [],
@@ -240,6 +242,18 @@ const ConfigScreen = () => {
               setParameters({
                 ...parameters,
                 algoliaApiKey: e.target.value,
+              });
+            }}
+          />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Algolia App ID:</FormControl.Label>
+          <TextInput
+            value={parameters.algoliaId}
+            onChange={e => {
+              setParameters({
+                ...parameters,
+                algoliaId: e.target.value,
               });
             }}
           />
