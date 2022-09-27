@@ -14,6 +14,8 @@ import {
 } from 'contentful-management';
 import { getSpace, getContentTypes, getUsers, getFilteredEntries } from 'app.service';
 
+import styles from './styles';
+
 type DefaultSpaceProps = {
   spaceId: string;
 };
@@ -73,7 +75,7 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
         </TextLink>
       </Flex>
       <Flex flexDirection="column" gap="spacingS">
-        {!isLoading &&
+        {!isLoading && sortedEntries.length > 0 ? (
           sortedEntries.map((e: EntryProps, i: number) => (
             <DefaultEntry
               key={`${e.sys.id}_${i}`}
@@ -81,7 +83,12 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
               contentTypes={cts?.items}
               users={users?.items}
             />
-          ))}
+          ))
+        ) : (
+          <Box className={styles.empty} padding="spacingM">
+            Recently updated entries will show up here.
+          </Box>
+        )}
       </Flex>
     </Box>
   ) : (
