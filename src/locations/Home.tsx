@@ -9,7 +9,6 @@ import algoliasearch from 'algoliasearch/lite';
 import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
-import OtherSpace from 'components/spaces/default/DefaultSpace';
 import { SearchClient } from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-hooks-web';
 import HeaderSkeleton from 'components/loaders/HeaderSkeleton';
@@ -35,9 +34,11 @@ const Home = () => {
         sdk.parameters.installation.algoliaApiKey
       )
     );
-
-    setSelectedSpaces(sdk.parameters.installation.selectedSpaces);
   }, [sdk.parameters]);
+
+  useEffect(() => {
+    setSelectedSpaces(sdk.parameters.installation.selectedSpaces);
+  }, [sdk.parameters.installation.selectedSpaces]);
 
   return (
     <Box paddingBottom="spacingL">
@@ -86,9 +87,6 @@ const Home = () => {
             //   icon={<icons.SearchTrimmedIcon />}
             // />
           )}
-          {/* {spacesData && spacesData.others.length > 0 ? (
-            spacesData.others.map((s, i) => <OtherSpace key={`${s.space.sys.id}_${i}`} data={s} />)
-          ) : ( */}
           {selectedSpaces.length > 0 ? (
             sdk.parameters.installation.selectedSpaces.map((s: string) => (
               <DefaultSpace key={s} spaceId={s} />

@@ -26,7 +26,7 @@ type SelectedContentType = {
 } & ContentTypeProps;
 
 export interface AppInstallationParameters {
-  selectedContentTypes: SelectedContentType[] | null;
+  selectedContentTypes: SelectedContentType[];
   selectedSpaces: string[];
   algoliaApiKey: string;
   algoliaId: string;
@@ -36,7 +36,7 @@ export interface AppInstallationParameters {
 interface OptionsProps {
   spaces: CombinedSpaceProps[];
   contentTypes: ContentTypeProps[];
-  selectedSpace: SpaceProps | null;
+  selectedSpace: SpaceProps;
 }
 
 const uniqueSpaceIds = (contentTypes: SelectedContentType[]) =>
@@ -53,7 +53,7 @@ const ConfigScreen = () => {
   const [configOptions, setConfigOptions] = useState<OptionsProps>({
     spaces: [],
     contentTypes: [],
-    selectedSpace: null,
+    selectedSpace: {} as SpaceProps,
   });
   const sdk = useSDK<AppExtensionSDK>();
   const { spacesData, isLoading } = useSpaceData(true);
@@ -118,7 +118,7 @@ const ConfigScreen = () => {
       if (!item || item === '' || typeof item === 'undefined') {
         setConfigOptions({
           ...configOptions,
-          selectedSpace: null,
+          selectedSpace: {} as SpaceProps,
           contentTypes: [],
         });
       }
