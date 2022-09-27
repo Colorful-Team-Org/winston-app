@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from 'react';
 
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { HomeExtensionSDK } from '@contentful/app-sdk';
-import { Box, Button, Flex, Paragraph, TextInput } from '@contentful/f36-components';
+import { Box, Button, Flex, Paragraph } from '@contentful/f36-components';
 import algoliasearch from 'algoliasearch/lite';
 // import * as icons from '@contentful/f36-icons';
 
@@ -64,61 +64,53 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        <Suspense
-          fallback={
-            <>
-              <SpaceSkeleton />
-              <SpaceSkeleton />
-              <SpaceSkeleton />
-            </>
-          }
-        >
-          {algolia && (
-            <InstantSearch
-              searchClient={algolia}
-              indexName={sdk.parameters.installation.algoliaIndexName}
-            >
-              {/* <SearchBox /> */}
-            </InstantSearch>
-            // <TextInput
-            //   aria-label="Algolia Search"
-            //   id="algolia-search"
-            //   placeholder="Search for entries"
-            //   icon={<icons.SearchTrimmedIcon />}
-            // />
-          )}
-          {selectedSpaces.length > 0 ? (
-            sdk.parameters.installation.selectedSpaces.map((s: string) => (
+        {algolia && (
+          <InstantSearch
+            searchClient={algolia}
+            indexName={sdk.parameters.installation.algoliaIndexName}
+          >
+            {/* <SearchBox /> */}
+          </InstantSearch>
+          // <TextInput
+          //   aria-label="Algolia Search"
+          //   id="algolia-search"
+          //   placeholder="Search for entries"
+          //   icon={<icons.SearchTrimmedIcon />}
+          // />
+        )}
+        {selectedSpaces.length > 0 ? (
+          sdk.parameters.installation.selectedSpaces.map((s: string) => (
+            <Suspense fallback={<SpaceSkeleton />} key={s}>
               <DefaultSpace key={s} spaceId={s} />
-            ))
-          ) : (
-            <Flex
-              flexDirection="column"
-              padding="spacingM"
-              justifyContent="center"
-              alignItems="center"
-              style={{
-                background: '#fff',
-                border: `solid 1px ${tokens.gray300}`,
-                borderRadius: '8px',
-                textAlign: 'center',
-              }}
+            </Suspense>
+          ))
+        ) : (
+          <Flex
+            flexDirection="column"
+            padding="spacingM"
+            justifyContent="center"
+            alignItems="center"
+            style={{
+              background: '#fff',
+              border: `solid 1px ${tokens.gray300}`,
+              borderRadius: '8px',
+              textAlign: 'center',
+            }}
+          >
+            <Paragraph>
+              To see recently updated related spaces, please configure the dashboard app by adding
+              spaces and content types.
+            </Paragraph>
+            <Button
+              as="a"
+              href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Paragraph>
-                To see recently updated related spaces, please configure the dashboard app by adding
-                spaces and content types.
-              </Paragraph>
-              <Button
-                as="a"
-                href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Get Started
-              </Button>
-            </Flex>
-          )}
-        </Suspense>
+              Get Started
+            </Button>
+          </Flex>
+        )}
       </Flex>
     </Box>
   );
