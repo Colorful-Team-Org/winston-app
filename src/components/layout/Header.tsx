@@ -1,14 +1,19 @@
 import { FC } from 'react';
 import { Flex } from '@contentful/f36-components';
 import CurrentSpace from 'components/spaces/current/CurrentSpace';
+import { useQuery } from '@tanstack/react-query';
+import { getContentTypes, getSpace } from 'app.service';
+import { SpaceProps } from 'contentful-management';
 
 type HeaderProps = {
   user: any;
-  data: any;
+  spaceId: string;
 };
 
 const Header: FC<HeaderProps> = (props: HeaderProps) => {
-  const { data } = props;
+  const { spaceId, user } = props;
+  const { data: space } = useQuery<SpaceProps>(['currentSpace'], () => getSpace(spaceId));
+  const { data: cts } = useQuery(['currentSpaceCts'], () => getContentTypes(spaceId));
 
   return (
     <Flex
@@ -17,7 +22,7 @@ const Header: FC<HeaderProps> = (props: HeaderProps) => {
       style={{ maxWidth: '960px', margin: '0 auto' }}
       alignItems="center"
     >
-      <CurrentSpace data={data.primary} />
+      <CurrentSpace space={space!} contentTypes={cts} user={user} />
     </Flex>
   );
 };

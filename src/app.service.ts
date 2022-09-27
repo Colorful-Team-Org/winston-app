@@ -16,6 +16,18 @@ const setupApp = async (options: FetchOptions) => {
   };
 };
 
+const getSpace = (spaceId: string) => {
+  const { cma } = getAppState();
+
+  return cma!.space.get({ spaceId });
+};
+
+const getContentTypes = (spaceId: string) => {
+  const { cma } = getAppState();
+
+  return cma!.contentType.getMany({ spaceId, limit: 1000 });
+};
+
 const getEntries = async (options: FetchOptions) => {
   const { cma, sdk } = getAppState();
   const currentSpace = isCurrentSpace(options.spaceId, sdk!.ids.space);
@@ -84,4 +96,4 @@ const getManyEntries = (options: FetchOptions) => {
   });
 };
 
-export { setupApp, getEntries };
+export { setupApp, getEntries, getSpace, getContentTypes, getManyEntries };
