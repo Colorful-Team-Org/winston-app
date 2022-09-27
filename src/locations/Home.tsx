@@ -9,14 +9,16 @@ import algoliasearch from 'algoliasearch/lite';
 import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
-import useSpaceData from 'core/hooks/useSpaceData';
 import OtherSpace from 'components/spaces/default/DefaultSpace';
 import { SearchClient } from 'algoliasearch/lite';
 import { InstantSearch } from 'react-instantsearch-hooks-web';
+import HeaderSkeleton from 'components/loaders/HeaderSkeleton';
+import DefaultSpace from '../components/spaces/default/DefaultSpace';
+import SpaceSkeleton from 'components/loaders/SpaceSkeleton';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
-  // const { spacesData } = useSpaceData();
+  const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
   const [algolia, setAlgolia] = useState<SearchClient | null>(null);
 
   useEffect(() => {
@@ -26,13 +28,15 @@ const Home = () => {
       !sdk.parameters.installation.algoliaIndexName
     )
       return;
-    console.log(sdk.parameters.installation.algoliaIndexName);
+
     setAlgolia(
       algoliasearch(
         sdk.parameters.installation.algoliaId,
         sdk.parameters.installation.algoliaApiKey
       )
     );
+
+    setSelectedSpaces(sdk.parameters.installation.selectedSpaces);
   }, [sdk.parameters]);
 
   return (
@@ -48,7 +52,7 @@ const Home = () => {
           background: '#fff',
         }}
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<HeaderSkeleton />}>
           <Header user={sdk.user} spaceId={sdk.ids.space} />
         </Suspense>
       </Flex>
@@ -59,7 +63,15 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <>
+              <SpaceSkeleton />
+              <SpaceSkeleton />
+              <SpaceSkeleton />
+            </>
+          }
+        >
           {algolia && (
             <InstantSearch
               searchClient={algolia}
@@ -77,32 +89,37 @@ const Home = () => {
           {/* {spacesData && spacesData.others.length > 0 ? (
             spacesData.others.map((s, i) => <OtherSpace key={`${s.space.sys.id}_${i}`} data={s} />)
           ) : ( */}
-          <Flex
-            flexDirection="column"
-            padding="spacingM"
-            justifyContent="center"
-            alignItems="center"
-            style={{
-              background: '#fff',
-              border: `solid 1px ${tokens.gray300}`,
-              borderRadius: '8px',
-              textAlign: 'center',
-            }}
-          >
-            <Paragraph>
-              To see recently updated related spaces, please configure the dashboard app by adding
-              spaces and content types.
-            </Paragraph>
-            <Button
-              as="a"
-              href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
-              target="_blank"
-              rel="noopener noreferrer"
+          {selectedSpaces.length > 0 ? (
+            sdk.parameters.installation.selectedSpaces.map((s: string) => (
+              <DefaultSpace key={s} spaceId={s} />
+            ))
+          ) : (
+            <Flex
+              flexDirection="column"
+              padding="spacingM"
+              justifyContent="center"
+              alignItems="center"
+              style={{
+                background: '#fff',
+                border: `solid 1px ${tokens.gray300}`,
+                borderRadius: '8px',
+                textAlign: 'center',
+              }}
             >
-              Get Started
-            </Button>
-          </Flex>
-          {/* )} */}
+              <Paragraph>
+                To see recently updated related spaces, please configure the dashboard app by adding
+                spaces and content types.
+              </Paragraph>
+              <Button
+                as="a"
+                href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Started
+              </Button>
+            </Flex>
+          )}
         </Suspense>
       </Flex>
     </Box>

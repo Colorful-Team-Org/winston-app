@@ -9,9 +9,9 @@ import TimeAgo from 'javascript-time-ago';
 import { ContentTypeProps, EntryProps, UserProps } from 'contentful-management';
 
 type DefaultEntryProps = {
-  contentTypes: ContentTypeProps[];
+  contentTypes: ContentTypeProps[] | undefined;
   entry: EntryProps;
-  users: UserProps[];
+  users: UserProps[] | undefined;
 };
 
 const DefaultEntry = (props: DefaultEntryProps) => {
@@ -19,8 +19,12 @@ const DefaultEntry = (props: DefaultEntryProps) => {
   const timeAgo = new TimeAgo('en-US');
 
   const status = entry.sys.publishedAt ? 'Published' : entry.sys.archivedAt ? 'Archived' : 'Draft';
-  const selectedContentType = contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id);
-  const selectedUser = users.find(user => user.sys.id === entry.sys.updatedBy?.sys.id);
+  const selectedContentType = contentTypes
+    ? contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id)
+    : null;
+  const selectedUser = users
+    ? users.find(user => user.sys.id === entry.sys.updatedBy?.sys.id)
+    : null;
 
   return (
     <Box

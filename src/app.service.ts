@@ -45,6 +45,15 @@ const getEntries = async (options: FetchOptions) => {
   };
 };
 
+const getUsers = (spaceId: string) => {
+  const { cma } = getAppState();
+
+  return cma!.user.getManyForSpace({
+    spaceId,
+    limit: 1000,
+  });
+};
+
 const getFilteredEntries: any = async (options: FetchOptions) => {
   const { sdk } = getAppState();
   const selectedContentTypes: ContentTypeProps[] =
@@ -72,9 +81,7 @@ const getFilteredEntries: any = async (options: FetchOptions) => {
       return {
         ...curr,
         total: prev.total + curr.total,
-        items: [...prev.items, ...curr.items].sort((a: EntryProps, b: EntryProps) =>
-          b.sys.updatedAt.localeCompare(a.sys.updatedAt)
-        ),
+        items: [...prev.items, ...curr.items],
       };
     },
     {
@@ -96,4 +103,12 @@ const getManyEntries = (options: FetchOptions) => {
   });
 };
 
-export { setupApp, getEntries, getSpace, getContentTypes, getManyEntries };
+export {
+  setupApp,
+  getEntries,
+  getSpace,
+  getContentTypes,
+  getManyEntries,
+  getUsers,
+  getFilteredEntries,
+};
