@@ -17,9 +17,11 @@ import {
 import * as icons from '@contentful/f36-icons';
 
 import { ReactComponent as Logo } from '../../images/colorful.svg';
-import useSpaceData from 'core/hooks/useSpaceData';
 import { SpaceProps, ContentTypeProps } from 'contentful-management';
 import { CombinedSpaceProps } from 'types';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import useLocations from 'core/hooks/useLocations';
+import { getContentTypes, getSpace } from 'app.service';
 
 type SelectedContentType = {
   spaceName: string;
@@ -35,12 +37,14 @@ export interface AppInstallationParameters {
 
 interface OptionsProps {
   spaces: CombinedSpaceProps[];
-  contentTypes: ContentTypeProps[];
-  selectedSpace: SpaceProps;
+  selectedSpace: SpaceProps | undefined;
 }
 
 const uniqueSpaceIds = (contentTypes: SelectedContentType[]) =>
   Array.from(new Set(contentTypes.map(ct => ct.sys.space.sys.id)));
+
+const filterCurrentSpace = (locations: string[], currentSpace: string) =>
+  locations.filter(l => l !== currentSpace);
 
 const ConfigScreen = () => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({
@@ -52,11 +56,30 @@ const ConfigScreen = () => {
   });
   const [configOptions, setConfigOptions] = useState<OptionsProps>({
     spaces: [],
-    contentTypes: [],
-    selectedSpace: {} as SpaceProps,
+    selectedSpace: undefined,
   });
+
   const sdk = useSDK<AppExtensionSDK>();
-  const { spacesData, isLoading } = useSpaceData(true);
+  const { locations } = useLocations();
+  const filteredLocations = filterCurrentSpace(locations ?? [], sdk.ids.space);
+
+  const spaces = useQueries({
+    queries: filteredLocations.map(spaceId => {
+      return {
+        queryKey: ['space', spaceId],
+        queryFn: () => getSpace(spaceId),
+        enabled: !!filteredLocations.length,
+      };
+    }),
+  });
+  const { data: contentTypes, isLoading: ctLoading } = useQuery(
+    ['contentTypes', configOptions.selectedSpace?.sys.id],
+    () => getContentTypes(configOptions.selectedSpace!.sys.id),
+    {
+      enabled: !!configOptions.selectedSpace,
+      suspense: false,
+    }
+  );
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
@@ -69,15 +92,6 @@ const ConfigScreen = () => {
       targetState: currentState,
     };
   }, [parameters, sdk]);
-
-  useEffect(() => {
-    if (!spacesData || spacesData.others.length === 0) return;
-
-    setConfigOptions(config => ({
-      ...config,
-      spaces: spacesData.others,
-    }));
-  }, [spacesData]);
 
   useEffect(() => {
     // `onConfigure` allows to configure a callback to be
@@ -103,11 +117,10 @@ const ConfigScreen = () => {
   }, [sdk]);
 
   const handleSelectSpace = useCallback(
-    (item: CombinedSpaceProps) => {
+    (space: SpaceProps | undefined) => {
       setConfigOptions({
         ...configOptions,
-        selectedSpace: item.space,
-        contentTypes: item.contentTypes.items,
+        selectedSpace: space ?? ({} as SpaceProps),
       });
     },
     [configOptions]
@@ -118,8 +131,7 @@ const ConfigScreen = () => {
       if (!item || item === '' || typeof item === 'undefined') {
         setConfigOptions({
           ...configOptions,
-          selectedSpace: {} as SpaceProps,
-          contentTypes: [],
+          selectedSpace: undefined,
         });
       }
     },
@@ -166,7 +178,7 @@ const ConfigScreen = () => {
     <>
       <Box className={styles.background} />
       <Box className={styles.body}>
-        {configOptions.spaces.length === 0 && !isLoading && (
+        {spaces.length === 0 && (
           <Box marginBottom="spacingM">
             <Note variant="negative">
               This app needs to be installed in at least two spaces to work properly.
@@ -175,28 +187,27 @@ const ConfigScreen = () => {
         )}
         <Heading as="h2">Configuration</Heading>
         <Flex flexDirection="row" gap="spacingXl">
-          <FormControl style={{ flex: 1 }} isDisabled={configOptions.spaces.length === 0}>
+          <FormControl style={{ flex: 1 }} isDisabled={spaces.length === 0}>
             <FormControl.Label>Related Spaces:</FormControl.Label>
             <Autocomplete
-              items={configOptions.spaces}
-              placeholder="Select Spaces"
-              isDisabled={configOptions.spaces.length === 0}
-              onSelectItem={handleSelectSpace}
-              itemToString={(item: any) => item.space.name}
-              renderItem={(item: any) => item.space.name}
+              items={spaces}
+              onSelectItem={({ data }) => handleSelectSpace(data)}
+              placeholder="Select a space"
+              renderItem={item => item.data?.name}
+              itemToString={(item: any) => item?.data?.name}
               onInputValueChange={handleSpaceCleared}
             />
           </FormControl>
-          <FormControl style={{ flex: 1 }} isDisabled={!configOptions.selectedSpace}>
+          <FormControl style={{ flex: 1 }} isDisabled={ctLoading || contentTypes === undefined}>
             <FormControl.Label>Content Types:</FormControl.Label>
             <Autocomplete
-              items={configOptions.contentTypes}
+              items={contentTypes ? contentTypes.items : []}
               onSelectItem={handleSelectedContentType}
               placeholder="Select Content Types"
-              isDisabled={!configOptions.selectedSpace}
+              renderItem={item => item.name}
               itemToString={(item: any) => item.name}
-              renderItem={(item: any) => item.name}
               clearAfterSelect={true}
+              closeAfterSelect={true}
             />
           </FormControl>
         </Flex>
@@ -235,18 +246,6 @@ const ConfigScreen = () => {
         <hr className={styles.splitter} />
         <Heading as="h2">Algolia Configuration</Heading>
         <FormControl>
-          <FormControl.Label>Algolia API Key:</FormControl.Label>
-          <TextInput
-            value={parameters.algoliaApiKey}
-            onChange={e => {
-              setParameters({
-                ...parameters,
-                algoliaApiKey: e.target.value,
-              });
-            }}
-          />
-        </FormControl>
-        <FormControl>
           <FormControl.Label>Algolia App ID:</FormControl.Label>
           <TextInput
             value={parameters.algoliaId}
@@ -254,6 +253,18 @@ const ConfigScreen = () => {
               setParameters({
                 ...parameters,
                 algoliaId: e.target.value,
+              });
+            }}
+          />
+        </FormControl>
+        <FormControl>
+          <FormControl.Label>Algolia API Key:</FormControl.Label>
+          <TextInput
+            value={parameters.algoliaApiKey}
+            onChange={e => {
+              setParameters({
+                ...parameters,
+                algoliaApiKey: e.target.value,
               });
             }}
           />

@@ -3,38 +3,17 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { HomeExtensionSDK } from '@contentful/app-sdk';
 import { Box, Button, Flex, Paragraph } from '@contentful/f36-components';
-import algoliasearch from 'algoliasearch/lite';
-// import * as icons from '@contentful/f36-icons';
-
 import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
-import { SearchClient } from 'algoliasearch/lite';
-import { InstantSearch } from 'react-instantsearch-hooks-web';
 import HeaderSkeleton from 'components/loaders/HeaderSkeleton';
-import DefaultSpace from '../components/spaces/default/DefaultSpace';
+import DefaultSpace from 'components/spaces/default/DefaultSpace';
 import SpaceSkeleton from 'components/loaders/SpaceSkeleton';
+import LiveSearch from 'components/algolia/LiveSearch';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
   const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
-  const [algolia, setAlgolia] = useState<SearchClient | null>(null);
-
-  useEffect(() => {
-    if (
-      !sdk.parameters.installation.algoliaApiKey &&
-      !sdk.parameters.installation.algoliaId &&
-      !sdk.parameters.installation.algoliaIndexName
-    )
-      return;
-
-    setAlgolia(
-      algoliasearch(
-        sdk.parameters.installation.algoliaId,
-        sdk.parameters.installation.algoliaApiKey
-      )
-    );
-  }, [sdk.parameters]);
 
   useEffect(() => {
     setSelectedSpaces(sdk.parameters.installation.selectedSpaces);
@@ -64,20 +43,7 @@ const Home = () => {
         fullWidth={true}
         gap="spacing2Xl"
       >
-        {algolia && (
-          <InstantSearch
-            searchClient={algolia}
-            indexName={sdk.parameters.installation.algoliaIndexName}
-          >
-            {/* <SearchBox /> */}
-          </InstantSearch>
-          // <TextInput
-          //   aria-label="Algolia Search"
-          //   id="algolia-search"
-          //   placeholder="Search for entries"
-          //   icon={<icons.SearchTrimmedIcon />}
-          // />
-        )}
+        <LiveSearch />
         {selectedSpaces.length > 0 ? (
           sdk.parameters.installation.selectedSpaces.map((s: string) => (
             <Suspense fallback={<SpaceSkeleton />} key={s}>
