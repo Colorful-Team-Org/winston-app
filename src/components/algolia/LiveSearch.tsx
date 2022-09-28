@@ -5,25 +5,16 @@ import { useSDK } from '@contentful/react-apps-toolkit';
 import {
   Configure,
   InstantSearch,
+  PoweredBy,
   SearchBox,
-  useSearchBox,
   useInstantSearch,
 } from 'react-instantsearch-hooks-web';
 import Hits, { NoResults } from './Hits';
-import { Box, TextInput } from '@contentful/f36-components';
-import * as icons from '@contentful/f36-icons';
+import { Box } from '@contentful/f36-components';
 
 import styles from './styles';
 
-const SearchsBox = (props: any) => {
-  const { query, refine } = useSearchBox(props);
-
-  return (
-    <>
-      <TextInput placeholder="Search multiple spaces..." icon={<icons.SearchTrimmedIcon />} />
-    </>
-  );
-};
+import 'instantsearch.css/themes/satellite.css';
 
 function NoResultsBoundary({ children, fallback }: any) {
   const { results } = useInstantSearch();
@@ -70,8 +61,8 @@ const LiveSearch = () => {
           indexName={sdk.parameters.installation.algoliaIndexName}
         >
           <Configure hitsPerPage={5} />
-          <SearchBox />
-          <SearchsBox />
+          <SearchBox className={styles.searchBox} />
+          <PoweredBy />
           <NoResultsBoundary fallback={<NoResults className={styles.searchResults} />}>
             <Hits className={styles.searchResults} />
           </NoResultsBoundary>

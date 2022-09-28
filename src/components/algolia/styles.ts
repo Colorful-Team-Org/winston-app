@@ -5,6 +5,19 @@ const styles = {
   searchContainer: css({
     position: 'relative',
   }),
+  searchBox: css({
+    marginBottom: tokens.spacingXs,
+
+    '& input': {
+      boxShadow: tokens.boxShadowPositive,
+      borderColor: tokens.gray300,
+
+      '&:focus': {
+        boxShadow: tokens.glowPrimary,
+        borderColor: tokens.gray300,
+      },
+    },
+  }),
   searchResults: css({
     background: '#fff',
     boxShadow: tokens.boxShadowHeavy,
