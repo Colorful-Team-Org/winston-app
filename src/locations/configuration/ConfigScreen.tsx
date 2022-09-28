@@ -23,6 +23,8 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
 import { getContentTypes, getSpace } from 'app.service';
 
+const UNIQUE_SPACES = 5;
+
 type SelectedContentType = {
   spaceName: string;
 } & ContentTypeProps;
@@ -84,6 +86,14 @@ const ConfigScreen = () => {
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
+
+    if (parameters.selectedSpaces.length > UNIQUE_SPACES) {
+      sdk.notifier.error(
+        `You can only select ${UNIQUE_SPACES} unique spaces to display. Please remove one or more.`
+      );
+
+      return false;
+    }
 
     return {
       // Parameters to be persisted as the app configuration.
