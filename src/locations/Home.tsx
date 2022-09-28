@@ -44,39 +44,39 @@ const Home = () => {
         gap="spacing2Xl"
       >
         <LiveSearch />
-        {selectedSpaces.length > 0 ? (
-          sdk.parameters.installation.selectedSpaces.map((s: string) => (
-            <Suspense fallback={<SpaceSkeleton />} key={s}>
+        <Suspense fallback={<SpaceSkeleton />}>
+          {selectedSpaces.length > 0 ? (
+            sdk.parameters.installation.selectedSpaces.map((s: string) => (
               <DefaultSpace key={s} spaceId={s} />
-            </Suspense>
-          ))
-        ) : (
-          <Flex
-            flexDirection="column"
-            padding="spacingM"
-            justifyContent="center"
-            alignItems="center"
-            style={{
-              background: '#fff',
-              border: `solid 1px ${tokens.gray300}`,
-              borderRadius: '8px',
-              textAlign: 'center',
-            }}
-          >
-            <Paragraph>
-              To see recently updated related spaces, please configure the dashboard app by adding
-              spaces and content types.
-            </Paragraph>
-            <Button
-              as="a"
-              href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            ))
+          ) : (
+            <Flex
+              flexDirection="column"
+              padding="spacingM"
+              justifyContent="center"
+              alignItems="center"
+              style={{
+                background: '#fff',
+                border: `solid 1px ${tokens.gray300}`,
+                borderRadius: '8px',
+                textAlign: 'center',
+              }}
             >
-              Get Started
-            </Button>
-          </Flex>
-        )}
+              <Paragraph>
+                To see recently updated related spaces, please configure the dashboard app by adding
+                spaces and content types.
+              </Paragraph>
+              <Button
+                as="a"
+                href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${sdk.ids.space}/apps/${sdk.ids.app}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Started
+              </Button>
+            </Flex>
+          )}
+        </Suspense>
       </Flex>
     </Box>
   );

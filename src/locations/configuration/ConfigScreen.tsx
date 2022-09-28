@@ -78,6 +78,7 @@ const ConfigScreen = () => {
     {
       enabled: !!configOptions.selectedSpace,
       suspense: false,
+      staleTime: Infinity,
     }
   );
 
