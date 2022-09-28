@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.7.1",
     "@contentful/app-sdk": "4.10.0-alpha.3",
     "@contentful/f36-components": "4.19.0",
     "@contentful/f36-tokens": "4.0.1",
