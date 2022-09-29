@@ -61,7 +61,7 @@ const LiveSearch = () => {
           indexName={sdk.parameters.installation.algoliaIndexName}
         >
           <Configure hitsPerPage={5} />
-          <SearchBox className={styles.searchBox} />
+          <SearchBox className={styles.searchBox} placeholder="Search spaces..." />
           <PoweredBy />
           <NoResultsBoundary fallback={<NoResults className={styles.searchResults} />}>
             <Hits className={styles.searchResults} />

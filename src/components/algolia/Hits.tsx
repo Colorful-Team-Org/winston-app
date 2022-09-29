@@ -59,7 +59,7 @@ const Hits = (props: any) => {
       ))}
     </Box>
   ) : (
-    <>Loading...</>
+    <></>
   );
 };
 
