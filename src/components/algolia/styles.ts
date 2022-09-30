@@ -53,7 +53,7 @@ const styles = {
     },
 
     '&.show': {
-      top: `calc(100% + ${tokens.spacingM})`,
+      top: '90%',
       pointerEvents: 'inherit',
       opacity: 1,
     },
