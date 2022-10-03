@@ -150,7 +150,19 @@ const ConfigScreen = () => {
   );
 
   const handleSelectedContentType = useCallback(
-    (item: ContentTypeProps) => {
+    (item: ContentTypeProps & { spaceName?: string }) => {
+      const foundContentType = parameters.selectedContentTypes.find(
+        l => l.sys.id === item.sys.id && l.spaceName === configOptions.selectedSpace!.name
+      );
+
+      if (foundContentType) {
+        sdk.notifier.error(
+          'You already have that content type selected, please choose a different one.'
+        );
+
+        return;
+      }
+
       const newSelectedContentTypes = [
         ...(parameters.selectedContentTypes ? parameters.selectedContentTypes : []),
         ...[
@@ -167,7 +179,7 @@ const ConfigScreen = () => {
         selectedSpaces: uniqueSpaceIds(newSelectedContentTypes),
       });
     },
-    [parameters, configOptions]
+    [parameters, configOptions, sdk.notifier]
   );
 
   const handleCtRemove = useCallback(

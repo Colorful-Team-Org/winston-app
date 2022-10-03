@@ -1,19 +1,8 @@
-This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
+## Configuration Screen
+![App Configuration](configScreen.png)
 
-## How to use
-
-Execute create-contentful-app with npm, npx or yarn to bootstrap the example:
-
-```bash
-# npx
-npx create-contentful-app  --typescript
-
-# npm
-npm init contentful-app  --typescript
-
-# Yarn
-yarn create contentful-app  --typescript
-```
+## App Example
+![App Example](Example.png)
 
 ## Available Scripts
 
