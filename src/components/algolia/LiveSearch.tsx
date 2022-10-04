@@ -5,7 +5,6 @@ import { useSDK } from '@contentful/react-apps-toolkit';
 import {
   Configure,
   InstantSearch,
-  PoweredBy,
   SearchBox,
   useInstantSearch,
 } from 'react-instantsearch-hooks-web';
@@ -62,7 +61,6 @@ const LiveSearch = () => {
         >
           <Configure hitsPerPage={5} />
           <SearchBox className={styles.searchBox} placeholder="Search spaces..." />
-          <PoweredBy />
           <NoResultsBoundary fallback={<NoResults className={styles.searchResults} />}>
             <Hits className={styles.searchResults} />
           </NoResultsBoundary>
