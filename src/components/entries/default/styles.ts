@@ -31,11 +31,15 @@ const styles = {
     background: tokens.green400,
     boxShadow: '0px 0px 6px 0px rgba(0, 133, 57, 0.9)',
   }),
-  Archived: css({
+  Draft: css({
     background: tokens.orange400,
     boxShadow: '0px 0px 6px 0px rgba(240, 127, 35, 0.9)',
   }),
-  Draft: css({
+  Archived: css({
+    background: tokens.gray400,
+    boxShadow: '0px 0px 6px 0px rgba(0,0,0, 0.4)',
+  }),
+  Changed: css({
     background: tokens.blue400,
     boxShadow: '0px 0px 6px 0px rgba(3, 111, 227, 0.9)',
   }),
