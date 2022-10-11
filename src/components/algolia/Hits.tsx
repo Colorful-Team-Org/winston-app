@@ -1,7 +1,7 @@
 import { SpaceProps } from 'contentful-management';
 import { getSpace } from 'app.service';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
-import { Box, Heading, Paragraph, SectionHeading } from '@contentful/f36-components';
+import { Badge, Box, Heading, Paragraph } from '@contentful/f36-components';
 import { useHits, useInstantSearch } from 'react-instantsearch-hooks-web';
 import clsx from 'clsx';
 
@@ -44,13 +44,13 @@ const Hits = (props: any) => {
           key={hit.entry.id + '_' + i}
           target="_blank"
         >
-          <SectionHeading marginBottom="none" className={styles.subheading}>
+          <Badge variant="secondary" size="small" className={styles.subheading}>
             {findSpace(spaceData, hit.space) ? (
               findSpace(spaceData, hit.space)!.data!.name
             ) : (
               <>Unknown</>
             )}
-          </SectionHeading>
+          </Badge>
           <Heading as="h3">{hit.entry.title}</Heading>
           <Paragraph marginBottom="none" isTruncated={true}>
             {hit.entry.body}

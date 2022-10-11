@@ -59,8 +59,7 @@ const styles = {
     },
   }),
   subheading: css({
-    color: tokens.blue400,
-    fontSize: tokens.fontSizeS,
+    marginBottom: tokens.spacingXs,
   }),
 };
 
