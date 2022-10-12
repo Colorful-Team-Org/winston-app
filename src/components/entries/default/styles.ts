@@ -12,7 +12,7 @@ const styles = {
     width: '100%',
     border: `solid 1px ${tokens.gray300}`,
     borderRadius: '8px',
-    transition: 'border 0.2s ease-in-out',
+    transition: 'border 0.2s ease-in-out, background 0.2s ease-in-out',
     textDecoration: 'none',
     color: tokens.gray600,
 
@@ -22,6 +22,7 @@ const styles = {
 
     '&:hover': {
       borderColor: tokens.gray400,
+      background: tokens.gray100,
       svg: {
         fill: tokens.colorPrimary,
       },

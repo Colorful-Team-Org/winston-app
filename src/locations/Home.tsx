@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from 'react';
 
 import { useSDK } from '@contentful/react-apps-toolkit';
 import { HomeExtensionSDK } from '@contentful/app-sdk';
-import { Box, Button, Flex, Paragraph } from '@contentful/f36-components';
+import { Box, Button, Flex, Paragraph, Text } from '@contentful/f36-components';
 import tokens from '@contentful/f36-tokens';
 
 import Header from 'components/layout/Header';
@@ -10,6 +10,8 @@ import HeaderSkeleton from 'components/loaders/HeaderSkeleton';
 import DefaultSpace from 'components/spaces/default/DefaultSpace';
 import SpaceSkeleton from 'components/loaders/SpaceSkeleton';
 import LiveSearch from 'components/algolia/LiveSearch';
+
+import { ReactComponent as Logo } from 'images/colorful.svg';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
@@ -20,7 +22,7 @@ const Home = () => {
   }, [sdk.parameters.installation.selectedSpaces]);
 
   return (
-    <Box paddingBottom="spacingL">
+    <Box paddingBottom="spacing3Xl">
       <Flex
         as="header"
         flexDirection="row"
@@ -78,6 +80,12 @@ const Home = () => {
             </Flex>
           )}
         </Suspense>
+        <Flex flexDirection="column" justifyContent="center" alignItems="center" gap="spacingM">
+          <Logo width="50px" />
+          <Text fontColor="gray500">
+            &copy; {new Date().getFullYear()} Colorful Collective. All rights reserved.
+          </Text>
+        </Flex>
       </Flex>
     </Box>
   );
