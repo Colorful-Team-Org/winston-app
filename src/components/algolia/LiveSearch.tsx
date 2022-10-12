@@ -59,7 +59,7 @@ const LiveSearch = () => {
           searchClient={algolia}
           indexName={sdk.parameters.installation.algoliaIndexName}
         >
-          <Configure hitsPerPage={5} />
+          <Configure hitsPerPage={5} filters={`locale:en-US`} />
           <SearchBox className={styles.searchBox} placeholder="Search spaces..." />
           <NoResultsBoundary fallback={<NoResults className={styles.searchResults} />}>
             <Hits className={styles.searchResults} />
