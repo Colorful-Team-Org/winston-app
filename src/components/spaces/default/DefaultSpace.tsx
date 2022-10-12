@@ -71,7 +71,7 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open {space.name}
+          View Space
         </TextLink>
       </Flex>
       <Flex flexDirection="column" gap="spacingS">

@@ -51,7 +51,7 @@ const DefaultEntry = (props: DefaultEntryProps) => {
           <Subheading isTruncated marginBottom="none">
             {selectedContentType && entry.fields[selectedContentType.displayField]
               ? entry.fields[selectedContentType.displayField]['en-US']
-              : 'Untitled'}
+              : 'Unknown'}
           </Subheading>
         </Box>
         <Box style={{ width: '15%' }}>
