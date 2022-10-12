@@ -58,6 +58,12 @@ const styles = {
       opacity: 1,
     },
   }),
+  resultBody: css({
+    display: '-webkit-box',
+    '-webkit-line-clamp': '2',
+    '-webkit-box-orient': 'vertical',
+    overflow: 'hidden',
+  }),
   subheading: css({
     marginBottom: tokens.spacingXs,
   }),

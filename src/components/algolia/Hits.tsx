@@ -52,7 +52,7 @@ const Hits = (props: any) => {
             )}
           </Badge>
           <Heading as="h3">{hit.entry.title}</Heading>
-          <Paragraph marginBottom="none" isTruncated={true}>
+          <Paragraph marginBottom="none" className={styles.resultBody}>
             {hit.entry.body}
           </Paragraph>
         </Box>
