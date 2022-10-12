@@ -9,19 +9,15 @@ import {
   Autocomplete,
   FormControl,
   TextInput,
-  Note,
-  Text,
-  TextLink,
-  Grid,
 } from '@contentful/f36-components';
 import * as icons from '@contentful/f36-icons';
 
 import { ReactComponent as Logo } from '../../images/colorful.svg';
 import { SpaceProps, ContentTypeProps } from 'contentful-management';
-import { CombinedSpaceProps } from 'types';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
-import { getContentTypes, getSpace } from 'app.service';
+import { getSpace } from 'app.service';
+import DraggableSpaces from 'components/configuration/DraggableSpaces';
 
 const UNIQUE_SPACES = 5;
 
@@ -30,16 +26,9 @@ type SelectedContentType = {
 } & ContentTypeProps;
 
 export interface AppInstallationParameters {
-  selectedContentTypes: SelectedContentType[];
-  selectedSpaces: string[];
   algoliaApiKey: string;
   algoliaId: string;
   algoliaIndexName: string;
-}
-
-interface OptionsProps {
-  spaces: CombinedSpaceProps[];
-  selectedSpace: SpaceProps | undefined;
 }
 
 const uniqueSpaceIds = (contentTypes: SelectedContentType[]) =>
@@ -50,16 +39,12 @@ const filterCurrentSpace = (locations: string[], currentSpace: string) =>
 
 const ConfigScreen = () => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({
-    selectedContentTypes: [],
-    selectedSpaces: [],
     algoliaApiKey: '',
     algoliaId: '',
     algoliaIndexName: '',
   });
-  const [configOptions, setConfigOptions] = useState<OptionsProps>({
-    spaces: [],
-    selectedSpace: undefined,
-  });
+  const [selectedSpaces, setSelectedSpaces] = useState<SpaceProps[]>([]);
+  const [selectedContentTypes, setSelectedContentTypes] = useState<ContentTypeProps[]>([]);
 
   const sdk = useSDK<AppExtensionSDK>();
   const { locations } = useLocations();
@@ -74,47 +59,31 @@ const ConfigScreen = () => {
       };
     }),
   });
-  const { data: contentTypes, isLoading: ctLoading } = useQuery(
-    ['contentTypes', configOptions.selectedSpace?.sys.id],
-    () => getContentTypes(configOptions.selectedSpace!.sys.id),
-    {
-      enabled: !!configOptions.selectedSpace,
-      suspense: false,
-      staleTime: Infinity,
-    }
-  );
+  // const { data: contentTypes, isLoading: ctLoading } = useQuery(
+  //   ['contentTypes', configOptions.selectedSpace?.sys.id],
+  //   () => getContentTypes(configOptions.selectedSpace!.sys.id),
+  //   {
+  //     enabled: !!configOptions.selectedSpace,
+  //     suspense: false,
+  //     staleTime: Infinity,
+  //   }
+  // );
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
 
-    if (parameters.selectedSpaces.length > UNIQUE_SPACES) {
-      sdk.notifier.error(
-        `You can only select ${UNIQUE_SPACES} unique spaces to display. Please remove one or more.`
-      );
-
-      return false;
-    }
-
     return {
-      // Parameters to be persisted as the app configuration.
       parameters,
-      // In case you don't want to submit any update to app
-      // locations, you can just pass the currentState as is
       targetState: currentState,
     };
   }, [parameters, sdk]);
 
   useEffect(() => {
-    // `onConfigure` allows to configure a callback to be
-    // invoked when a user attempts to install the app or update
-    // its configuration.
     sdk.app.onConfigure(() => onConfigure());
   }, [sdk, onConfigure]);
 
   useEffect(() => {
     (async () => {
-      // Get current parameters of the app.
-      // If the app is not installed yet, `parameters` will be `null`.
       const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
 
       if (currentParameters) {
@@ -127,145 +96,64 @@ const ConfigScreen = () => {
     })();
   }, [sdk]);
 
-  const handleSelectSpace = useCallback(
-    (space: SpaceProps | undefined) => {
-      setConfigOptions({
-        ...configOptions,
-        selectedSpace: space ?? ({} as SpaceProps),
-      });
-    },
-    [configOptions]
-  );
+  const handleNewSelectedSpace = useCallback((space: SpaceProps | undefined) => {
+    if (!space) return;
 
-  const handleSpaceCleared = useCallback(
-    (item: string) => {
-      if (!item || item === '' || typeof item === 'undefined') {
-        setConfigOptions({
-          ...configOptions,
-          selectedSpace: undefined,
-        });
-      }
-    },
-    [configOptions]
-  );
+    setSelectedSpaces((spaces: SpaceProps[]) => {
+      return [...spaces, ...[space]];
+    });
+  }, []);
 
-  const handleSelectedContentType = useCallback(
-    (item: ContentTypeProps & { spaceName?: string }) => {
-      const foundContentType = parameters.selectedContentTypes.find(
-        l => l.sys.id === item.sys.id && l.spaceName === configOptions.selectedSpace!.name
+  const toggleCt = useCallback(
+    (ct: ContentTypeProps) => {
+      const foundIndex = selectedContentTypes.findIndex(
+        (selected: ContentTypeProps) =>
+          selected.sys.space.sys.id === ct.sys.space.sys.id && selected.sys.id === ct.sys.id
       );
 
-      if (foundContentType) {
-        sdk.notifier.error(
-          'You already have that content type selected, please choose a different one.'
+      if (foundIndex > -1) {
+        setSelectedContentTypes((selected: ContentTypeProps[]) =>
+          selected.filter((current, index) => index !== foundIndex)
         );
-
-        return;
+      } else {
+        setSelectedContentTypes((selected: ContentTypeProps[]) => [...selected, ...[ct]]);
       }
-
-      const newSelectedContentTypes = [
-        ...(parameters.selectedContentTypes ? parameters.selectedContentTypes : []),
-        ...[
-          {
-            ...item,
-            spaceName: configOptions.selectedSpace!.name,
-          },
-        ],
-      ];
-
-      setParameters({
-        ...parameters,
-        selectedContentTypes: newSelectedContentTypes,
-        selectedSpaces: uniqueSpaceIds(newSelectedContentTypes),
-      });
     },
-    [parameters, configOptions, sdk.notifier]
+    [selectedContentTypes]
   );
 
-  const handleCtRemove = useCallback(
-    (id: string) => {
-      const newSelectedContentTypes = parameters.selectedContentTypes!.filter(
-        ct => ct.sys.id !== id
-      );
-
-      setParameters({
-        ...parameters,
-        selectedContentTypes: newSelectedContentTypes,
-        selectedSpaces: uniqueSpaceIds(newSelectedContentTypes),
-      });
-    },
-    [parameters]
-  );
+  // const handleSpaceCleared = useCallback(
+  //   (item: string) => {
+  //     if (!item || item === '' || typeof item === 'undefined') {
+  //       setConfigOptions({
+  //         ...configOptions,
+  //         selectedSpace: undefined,
+  //       });
+  //     }
+  //   },
+  //   [configOptions]
+  // );
 
   return (
     <>
       <Box className={styles.background} />
       <Box className={styles.body}>
-        {spaces.length === 0 && (
-          <Box marginBottom="spacingM">
-            <Note variant="negative">
-              This app needs to be installed in at least two spaces to work properly.
-            </Note>
-          </Box>
-        )}
-        <Heading as="h2">Configuration</Heading>
-        <Flex flexDirection="row" gap="spacingXl">
-          <FormControl style={{ flex: 1 }} isDisabled={spaces.length === 0}>
-            <FormControl.Label>Related Spaces:</FormControl.Label>
+        <Flex flexDirection="column" gap="spacingL">
+          <FormControl style={{ flex: 1 }} isDisabled={spaces.length === 0} marginBottom="none">
+            <FormControl.Label>Add a space:</FormControl.Label>
             <Autocomplete
               items={spaces}
-              onSelectItem={({ data }) => handleSelectSpace(data)}
+              onSelectItem={({ data }) => handleNewSelectedSpace(data)}
               placeholder="Select a space"
               renderItem={item => item.data?.name}
               itemToString={(item: any) => item?.data?.name}
-              onInputValueChange={handleSpaceCleared}
+              clearAfterSelect
             />
           </FormControl>
-          <FormControl style={{ flex: 1 }} isDisabled={ctLoading || contentTypes === undefined}>
-            <FormControl.Label>Content Types:</FormControl.Label>
-            <Autocomplete
-              items={contentTypes ? contentTypes.items : []}
-              onSelectItem={handleSelectedContentType}
-              placeholder="Select Content Types"
-              renderItem={item => item.name}
-              itemToString={(item: any) => item.name}
-              clearAfterSelect={true}
-              closeAfterSelect={true}
-            />
-          </FormControl>
+          {!!selectedSpaces.length && (
+            <DraggableSpaces spaces={selectedSpaces} toggleCt={toggleCt} />
+          )}
         </Flex>
-        {parameters.selectedContentTypes && (
-          <Grid columns="repeat(3, minmax(0, 1fr))" columnGap="spacingS" rowGap="spacingS">
-            {parameters.selectedContentTypes.map((item, i) => (
-              <Box key={`${item.sys.id}_${i}`} className={styles.selectedCt} padding="spacingXs">
-                <Flex alignItems="center" gap="spacingM" style={{ width: '100%' }}>
-                  <Box
-                    style={{
-                      flex: '1',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '5px',
-                      minWidth: 0,
-                    }}
-                  >
-                    <Text fontWeight="fontWeightDemiBold">{item.name}</Text>
-                    <Text fontSize="fontSizeS" as="div" isTruncated>
-                      {item.spaceName}
-                    </Text>
-                  </Box>
-                  <TextLink
-                    as="button"
-                    variant="secondary"
-                    onClick={() => handleCtRemove(item.sys.id)}
-                    style={{ lineHeight: 1 }}
-                  >
-                    <icons.CloseIcon style={{ lineHeight: 1 }} variant="muted" />
-                  </TextLink>
-                </Flex>
-              </Box>
-            ))}
-          </Grid>
-        )}
         <hr className={styles.splitter} />
         <Heading as="h2">Algolia Configuration</Heading>
         <FormControl>
