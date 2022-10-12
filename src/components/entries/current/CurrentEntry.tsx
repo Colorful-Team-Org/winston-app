@@ -30,7 +30,9 @@ const CurrentEntry = (props: CurrentEntryProps) => {
           <Flex style={{ minWidth: 0 }} flexDirection="column">
             <Box className={styles.title}>
               <Text fontWeight="fontWeightDemiBold" fontSize="fontSizeL">
-                {entry.fields[selectedContentType.displayField]['en-US']}
+                {entry.fields[selectedContentType.displayField]
+                  ? entry.fields[selectedContentType.displayField]['en-US']
+                  : 'Unknown'}
               </Text>
             </Box>
             <Text isTruncated as="div" fontColor="gray500">
