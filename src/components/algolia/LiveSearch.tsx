@@ -2,35 +2,13 @@ import { useEffect, useState } from 'react';
 
 import algoliasearch, { SearchClient } from 'algoliasearch/lite';
 import { useSDK } from '@contentful/react-apps-toolkit';
-import {
-  Configure,
-  InstantSearch,
-  SearchBox,
-  useInstantSearch,
-} from 'react-instantsearch-hooks-web';
-import Hits, { NoResults } from './Hits';
+import { Configure, InstantSearch, SearchBox } from 'react-instantsearch-hooks-web';
+import Hits from './Hits';
 import { Box } from '@contentful/f36-components';
 
 import styles from './styles';
 
 import 'instantsearch.css/themes/satellite.css';
-
-function NoResultsBoundary({ children, fallback }: any) {
-  const { results } = useInstantSearch();
-
-  // The `__isArtificial` flag makes sure to not display the No Results message
-  // when no hits have been returned yet.
-  if (!results.__isArtificial && results.nbHits === 0) {
-    return (
-      <>
-        {fallback}
-        <div hidden>{children}</div>
-      </>
-    );
-  }
-
-  return children;
-}
 
 const LiveSearch = () => {
   const sdk = useSDK();
@@ -61,9 +39,7 @@ const LiveSearch = () => {
         >
           <Configure hitsPerPage={5} filters={`locale:en-US`} />
           <SearchBox className={styles.searchBox} placeholder="Search spaces..." />
-          <NoResultsBoundary fallback={<NoResults className={styles.searchResults} />}>
-            <Hits className={styles.searchResults} />
-          </NoResultsBoundary>
+          <Hits className={styles.searchResults} />
         </InstantSearch>
       </Box>
     )

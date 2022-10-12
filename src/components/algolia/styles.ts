@@ -67,6 +67,15 @@ const styles = {
   subheading: css({
     marginBottom: tokens.spacingXs,
   }),
+  noResults: css({
+    minHeight: '200px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    '& p': {
+      fontSize: tokens.fontSizeL,
+    },
+  }),
 };
 
 export default styles;
