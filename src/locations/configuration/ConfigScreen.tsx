@@ -2,37 +2,21 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
 import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
 import styles from './styles';
-import {
-  Box,
-  Heading,
-  Flex,
-  Autocomplete,
-  FormControl,
-  TextInput,
-} from '@contentful/f36-components';
-import * as icons from '@contentful/f36-icons';
+import { Box, Heading, Flex, FormControl, TextInput } from '@contentful/f36-components';
 
 import { ReactComponent as Logo } from '../../images/colorful.svg';
 import { SpaceProps, ContentTypeProps } from 'contentful-management';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
 import DraggableSpaces from 'components/configuration/DraggableSpaces';
-
-const UNIQUE_SPACES = 5;
-
-type SelectedContentType = {
-  spaceName: string;
-} & ContentTypeProps;
+import useConfigStore from './config.store';
 
 export interface AppInstallationParameters {
   algoliaApiKey: string;
   algoliaId: string;
   algoliaIndexName: string;
 }
-
-const uniqueSpaceIds = (contentTypes: SelectedContentType[]) =>
-  Array.from(new Set(contentTypes.map(ct => ct.sys.space.sys.id)));
 
 const filterCurrentSpace = (locations: string[], currentSpace: string) =>
   locations.filter(l => l !== currentSpace);
@@ -43,8 +27,7 @@ const ConfigScreen = () => {
     algoliaId: '',
     algoliaIndexName: '',
   });
-  const [selectedSpaces, setSelectedSpaces] = useState<SpaceProps[]>([]);
-  const [selectedContentTypes, setSelectedContentTypes] = useState<ContentTypeProps[]>([]);
+  const { selectedContentTypes, selectedSpaces } = useConfigStore();
 
   const sdk = useSDK<AppExtensionSDK>();
   const { locations } = useLocations();
@@ -59,15 +42,6 @@ const ConfigScreen = () => {
       };
     }),
   });
-  // const { data: contentTypes, isLoading: ctLoading } = useQuery(
-  //   ['contentTypes', configOptions.selectedSpace?.sys.id],
-  //   () => getContentTypes(configOptions.selectedSpace!.sys.id),
-  //   {
-  //     enabled: !!configOptions.selectedSpace,
-  //     suspense: false,
-  //     staleTime: Infinity,
-  //   }
-  // );
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
@@ -96,63 +70,15 @@ const ConfigScreen = () => {
     })();
   }, [sdk]);
 
-  const handleNewSelectedSpace = useCallback((space: SpaceProps | undefined) => {
-    if (!space) return;
-
-    setSelectedSpaces((spaces: SpaceProps[]) => {
-      return [...spaces, ...[space]];
-    });
-  }, []);
-
-  const toggleCt = useCallback(
-    (ct: ContentTypeProps) => {
-      const foundIndex = selectedContentTypes.findIndex(
-        (selected: ContentTypeProps) =>
-          selected.sys.space.sys.id === ct.sys.space.sys.id && selected.sys.id === ct.sys.id
-      );
-
-      if (foundIndex > -1) {
-        setSelectedContentTypes((selected: ContentTypeProps[]) =>
-          selected.filter((current, index) => index !== foundIndex)
-        );
-      } else {
-        setSelectedContentTypes((selected: ContentTypeProps[]) => [...selected, ...[ct]]);
-      }
-    },
-    [selectedContentTypes]
-  );
-
-  // const handleSpaceCleared = useCallback(
-  //   (item: string) => {
-  //     if (!item || item === '' || typeof item === 'undefined') {
-  //       setConfigOptions({
-  //         ...configOptions,
-  //         selectedSpace: undefined,
-  //       });
-  //     }
-  //   },
-  //   [configOptions]
-  // );
-
   return (
     <>
       <Box className={styles.background} />
       <Box className={styles.body}>
+        {selectedSpaces.map(ct => (
+          <p>{ct}</p>
+        ))}
         <Flex flexDirection="column" gap="spacingL">
-          <FormControl style={{ flex: 1 }} isDisabled={spaces.length === 0} marginBottom="none">
-            <FormControl.Label>Add a space:</FormControl.Label>
-            <Autocomplete
-              items={spaces}
-              onSelectItem={({ data }) => handleNewSelectedSpace(data)}
-              placeholder="Select a space"
-              renderItem={item => item.data?.name}
-              itemToString={(item: any) => item?.data?.name}
-              clearAfterSelect
-            />
-          </FormControl>
-          {!!selectedSpaces.length && (
-            <DraggableSpaces spaces={selectedSpaces} toggleCt={toggleCt} />
-          )}
+          {!spaces.some(s => s.isLoading) && <DraggableSpaces spaces={spaces} />}
         </Flex>
         <hr className={styles.splitter} />
         <Heading as="h2">Algolia Configuration</Heading>

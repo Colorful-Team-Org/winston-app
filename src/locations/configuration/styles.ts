@@ -7,7 +7,7 @@ const styles = {
     margin: '0 auto',
     marginTop: tokens.spacingXl,
     padding: `${tokens.spacingXl} ${tokens.spacing2Xl}`,
-    maxWidth: tokens.contentWidthText,
+    maxWidth: '960px',
     backgroundColor: tokens.colorWhite,
     zIndex: 2,
     boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.1)',
