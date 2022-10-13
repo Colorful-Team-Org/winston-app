@@ -80,7 +80,7 @@ const SortableCard = (props: SortableCardProps) => {
       ref={setNodeRef}
     >
       <ToggleButton
-        isActive={isExpanded}
+        isActive={selectedSpaces.includes(sys.id)}
         onToggle={() => toggleSpaceIds(id)}
         className={style.toggleBtn}
       >
