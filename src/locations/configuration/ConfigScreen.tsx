@@ -5,7 +5,6 @@ import styles from './styles';
 import { Box, Heading, Flex, FormControl, TextInput } from '@contentful/f36-components';
 
 import { ReactComponent as Logo } from '../../images/colorful.svg';
-import { SpaceProps, ContentTypeProps } from 'contentful-management';
 import { useQueries } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
@@ -18,6 +17,11 @@ export interface AppInstallationParameters {
   algoliaIndexName: string;
 }
 
+/*
+ * On save take the order of the displayed spaces, remove the ones that aren't in the selected array and save that as the
+ * selectedSpace parameter.
+ */
+
 const filterCurrentSpace = (locations: string[], currentSpace: string) =>
   locations.filter(l => l !== currentSpace);
 
@@ -27,7 +31,7 @@ const ConfigScreen = () => {
     algoliaId: '',
     algoliaIndexName: '',
   });
-  const { selectedContentTypes, selectedSpaces } = useConfigStore();
+  // const { selectedContentTypes, selectedSpaces } = useConfigStore();
 
   const sdk = useSDK<AppExtensionSDK>();
   const { locations } = useLocations();
@@ -74,10 +78,7 @@ const ConfigScreen = () => {
     <>
       <Box className={styles.background} />
       <Box className={styles.body}>
-        {selectedSpaces.map(ct => (
-          <p>{ct}</p>
-        ))}
-        <Flex flexDirection="column" gap="spacingL">
+        <Flex flexDirection="column">
           {!spaces.some(s => s.isLoading) && <DraggableSpaces spaces={spaces} />}
         </Flex>
         <hr className={styles.splitter} />

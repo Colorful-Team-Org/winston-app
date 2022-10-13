@@ -22,13 +22,18 @@ type SortableCardProps = SpaceProps & {
 };
 
 const SortableDragHandle = (props: any) => (
-  <DragHandle as="button" style={{ alignSelf: 'stretch' }} label="Move card" {...props} />
+  <DragHandle as="div" style={{ alignSelf: 'stretch' }} label="Move card" {...props} />
 );
 
 const SortableCard = (props: SortableCardProps) => {
   const { id, sys, name } = props;
-  const { selectedContentTypes, addContentType, removeContentType, toggleSpaceIds } =
-    useConfigStore();
+  const {
+    selectedContentTypes,
+    selectedSpaces,
+    addContentType,
+    removeContentType,
+    toggleSpaceIds,
+  } = useConfigStore();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
@@ -81,13 +86,19 @@ const SortableCard = (props: SortableCardProps) => {
       >
         <Flex gap="spacingS" alignItems="center">
           <SortableDragHandle {...attributes} {...listeners} />
-          <Checkbox id={sys.id} value={sys.id} key={`${sys.id}`} />
+          <Checkbox
+            id={sys.id}
+            value={sys.id}
+            key={`${sys.id}`}
+            isChecked={selectedSpaces.includes(sys.id)}
+            onChange={() => {}}
+          />
           <strong>{name}</strong>
           <Text fontColor="gray600">({sys.id})</Text>
         </Flex>
       </ToggleButton>
       {!ctLoading && (
-        <Collapse isExpanded={true}>
+        <Collapse isExpanded={selectedSpaces.includes(sys.id)}>
           <Grid
             columnGap="spacingS"
             rowGap="spacingS"
@@ -97,13 +108,8 @@ const SortableCard = (props: SortableCardProps) => {
             columns="1fr 1fr 1fr"
           >
             {contentTypes?.items.map((ct: ContentTypeProps) => (
-              <Grid.Item>
-                <Checkbox
-                  id={ct.sys.id}
-                  value={ct.sys.id}
-                  key={`${ct.sys.space.sys.id}-${ct.sys.id}`}
-                  onChange={() => toggleCt(ct)}
-                >
+              <Grid.Item key={`${ct.sys.space.sys.id}-${ct.sys.id}`}>
+                <Checkbox id={ct.sys.id} value={ct.sys.id} onChange={() => toggleCt(ct)}>
                   {ct.name}
                 </Checkbox>
               </Grid.Item>

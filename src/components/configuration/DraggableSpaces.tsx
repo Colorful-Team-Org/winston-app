@@ -46,7 +46,7 @@ const DraggableSpaces = (props: DraggableSpacesProps) => {
   return (
     <DndContext onDragEnd={handleDragEnd} sensors={sensors} collisionDetection={closestCenter}>
       <SortableContext items={spaces} strategy={rectSortingStrategy}>
-        <Flex flexDirection="column" gap="spacingS" ref={setNodeRef}>
+        <Flex flexDirection="column" ref={setNodeRef}>
           {spaces.map((space: SpaceProps) => (
             <SortableCard id={space.sys.id} {...space} key={space.sys.id} />
           ))}

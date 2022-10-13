@@ -4,6 +4,7 @@ import { ContentTypeProps } from 'contentful-management';
 interface ConfigState {
   selectedContentTypes: ContentTypeProps[];
   selectedSpaces: string[];
+  spaceOrder: string[];
   addContentType: (ct: ContentTypeProps) => void;
   removeContentType: (foundIndex: number) => void;
   toggleSpaceIds: (spaceId: string) => void;
@@ -12,6 +13,7 @@ interface ConfigState {
 const useConfigStore = create<ConfigState>()(set => ({
   selectedContentTypes: [] as ContentTypeProps[],
   selectedSpaces: [],
+  spaceOrder: [],
   addContentType: (ct: ContentTypeProps) =>
     set(state => ({
       selectedContentTypes: [...state.selectedContentTypes, ...[ct]],
