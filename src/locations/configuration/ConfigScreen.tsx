@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
 import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
 import styles from './styles';
@@ -30,31 +30,6 @@ const filterCurrentSpace = (locations: string[], currentSpace: string) =>
   locations.filter(l => l !== currentSpace);
 
 const ConfigScreen = () => {
-  const [parameters, setParameters] = useState<AppInstallationParameters>({
-    selectedContentTypes: [],
-    selectedSpaces: [],
-    spaceOrder: [],
-    algoliaApiKey: '',
-    algoliaId: '',
-    algoliaIndexName: '',
-  });
-  // const { selectedSpaces, spaceOrder } = useConfigStore();
-  const {
-    selectedSpaces,
-    selectedContentTypes,
-    spaceOrder,
-    algoliaApiKey,
-    algoliaId,
-    algoliaIndexName,
-  } = useConfigStore(state => ({
-    selectedContentTypes: state.selectedContentTypes,
-    selectedSpaces: state.selectedSpaces,
-    spaceOrder: state.spaceOrder,
-    algoliaApiKey: state.algoliaApiKey,
-    algoliaId: state.algoliaId,
-    algoliaIndexName: state.algoliaIndexName,
-  }));
-
   const sdk = useSDK<AppExtensionSDK>();
   const { locations } = useLocations();
   const filteredLocations = filterCurrentSpace(locations ?? [], sdk.ids.space);
