@@ -9,7 +9,7 @@ import { useQueries } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
 import DraggableSpaces from 'components/configuration/DraggableSpaces';
-import useConfigStore from './config.store';
+import useConfigStore from 'core/stores/config.store';
 
 export interface AppInstallationParameters {
   algoliaApiKey: string;
@@ -43,6 +43,7 @@ const ConfigScreen = () => {
         queryKey: ['space', spaceId],
         queryFn: () => getSpace(spaceId),
         enabled: !!filteredLocations.length,
+        staleTime: Infinity,
       };
     }),
   });

@@ -1,58 +1,65 @@
-import {
-  DndContext,
-  DragEndEvent,
-  useDroppable,
-  PointerSensor,
-  useSensors,
-  useSensor,
-  closestCenter,
-} from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import SortableCard from './SortableCard';
 import { SpaceProps } from 'contentful-management';
-import { Flex } from '@contentful/f36-components';
 import { UseQueryResult } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useConfigStore from 'core/stores/config.store';
+import sortSpacesByArray from 'core/utils/sorting';
+import { Flex } from '@contentful/f36-components';
 
 type DraggableSpacesProps = {
   spaces: UseQueryResult<SpaceProps>[];
 };
 
 const DraggableSpaces = (props: DraggableSpacesProps) => {
-  const { setNodeRef } = useDroppable({ id: 'spaces' });
-  const sensors = useSensors(useSensor(PointerSensor));
-  const [spaces, setSpaces] = useState<any[]>([]);
+  const { spaceOrder, setSpaceOrder } = useConfigStore();
+  const [spaces, setSpaces] = useState<any[]>(() => {
+    const reducedSpaces = props.spaces.reduce((acc: any, curr: UseQueryResult<SpaceProps>) => {
+      return (acc = [...acc, ...[curr.data]]);
+    }, []);
 
-  useEffect(() => {
-    setSpaces(
-      props.spaces.reduce((acc: any, curr: UseQueryResult<SpaceProps>) => {
-        return (acc = [...acc, ...[curr.data]]);
-      }, [])
-    );
-  }, [props.spaces]);
+    return sortSpacesByArray(reducedSpaces, spaceOrder);
+  });
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setSpaces(s => {
-        const activeIndex = s.findIndex(s => s.sys.id === active.id);
-        const swapIndex = s.findIndex(s => s.sys.id === over.id);
+  const reorder = (list: SpaceProps[], startIndex: number, endIndex: number) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
 
-        return arrayMove(s, activeIndex, swapIndex);
-      });
+    return result;
+  };
+
+  const handleDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
     }
+
+    const reorderedSpaces: SpaceProps[] = reorder(
+      spaces,
+      result.source.index,
+      result.destination.index
+    );
+
+    console.log(reorderedSpaces);
+    setSpaces(s => {
+      setSpaceOrder(reorderedSpaces.map((s: SpaceProps) => s.sys.id));
+      return reorderedSpaces;
+    });
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors} collisionDetection={closestCenter}>
-      <SortableContext items={spaces} strategy={rectSortingStrategy}>
-        <Flex flexDirection="column" ref={setNodeRef}>
-          {spaces.map((space: SpaceProps) => (
-            <SortableCard id={space.sys.id} {...space} key={space.sys.id} />
-          ))}
-        </Flex>
-      </SortableContext>
-    </DndContext>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="spaces">
+        {provided => (
+          <Flex flexDirection="column" ref={provided.innerRef} {...provided.droppableProps}>
+            {spaces.map((space: SpaceProps, i: number) => (
+              <SortableCard id={space.sys.id} {...space} key={space.sys.id} index={i} />
+            ))}
+            {provided.placeholder}
+          </Flex>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 };
 

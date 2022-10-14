@@ -8,6 +8,7 @@ interface ConfigState {
   addContentType: (ct: ContentTypeProps) => void;
   removeContentType: (foundIndex: number) => void;
   toggleSpaceIds: (spaceId: string) => void;
+  setSpaceOrder: (spaceIds: string[]) => void;
 }
 
 const useConfigStore = create<ConfigState>()(set => ({
@@ -38,6 +39,7 @@ const useConfigStore = create<ConfigState>()(set => ({
         selectedSpaces: updatedSpaces,
       };
     }),
+  setSpaceOrder: (spaceIds: string[]) => set(state => ({ spaceOrder: spaceIds })),
 }));
 
 export default useConfigStore;
