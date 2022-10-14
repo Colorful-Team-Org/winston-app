@@ -10,10 +10,10 @@ import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
 import DraggableSpaces from 'components/configuration/DraggableSpaces';
 import useConfigStore from 'core/stores/config.store';
-import { ContentTypeProps } from 'contentful-management';
+import { SelectedContentType } from 'types';
 
 export interface AppInstallationParameters {
-  selectedContentTypes: ContentTypeProps[];
+  selectedContentTypes: SelectedContentType[];
   selectedSpaces: string[];
   spaceOrder: string[];
   algoliaApiKey: string;

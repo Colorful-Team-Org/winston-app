@@ -32,4 +32,11 @@ export type SdkState = {
   setSdk: (sdk: KnownSDK) => void;
 };
 
+export type SelectedContentType = {
+  spaceId: string;
+  id: string;
+  displayField: string;
+  name: string;
+};
+
 export type { RenderSpaceProps, FetchOptions, CombinedSpaceProps };

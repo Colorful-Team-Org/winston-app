@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@contentful/f36-components';
-import { ContentTypeProps, EntryProps } from 'contentful-management';
+import { EntryProps, ContentTypeProps } from 'contentful-management';
 
 import * as icons from '@contentful/f36-icons';
 

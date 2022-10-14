@@ -1,7 +1,7 @@
-import { FetchOptions } from 'types';
+import { FetchOptions, SelectedContentType } from 'types';
 
 import { getState as getAppState } from 'core/stores/appStore';
-import { CollectionProp, ContentTypeProps, EntryProps } from 'contentful-management';
+import { CollectionProp, EntryProps } from 'contentful-management';
 
 const isCurrentSpace = (spaceId: string, currentSpaceId: string) => spaceId === currentSpaceId;
 
@@ -56,9 +56,9 @@ const getUsers = (spaceId: string) => {
 
 const getFilteredEntries: any = async (options: FetchOptions) => {
   const { sdk } = getAppState();
-  const selectedContentTypes: ContentTypeProps[] =
+  const selectedContentTypes: SelectedContentType[] =
     sdk!.parameters.installation.selectedContentTypes.filter(
-      (ct: ContentTypeProps) => ct.sys.space.sys.id === options.spaceId
+      (ct: SelectedContentType) => ct.spaceId === options.spaceId
     );
 
   if (selectedContentTypes.length === 0) return [];
@@ -70,7 +70,7 @@ const getFilteredEntries: any = async (options: FetchOptions) => {
         query: {
           ...options.query,
           limit: 100,
-          content_type: ct.sys.id,
+          content_type: ct.id,
         },
       })
     )

@@ -15,6 +15,7 @@ import { getContentTypes } from 'app.service';
 import { useQuery } from '@tanstack/react-query';
 import useConfigStore from '../../core/stores/config.store';
 import { Draggable } from 'react-beautiful-dnd';
+import { SelectedContentType } from 'types';
 
 type SortableCardProps = SpaceProps & {
   id: string;
@@ -47,14 +48,19 @@ const SortableCard = (props: SortableCardProps) => {
   const toggleCt = useCallback(
     (ct: ContentTypeProps) => {
       const foundIndex = selectedContentTypes.findIndex(
-        (selected: ContentTypeProps) =>
-          selected.sys.space.sys.id === ct.sys.space.sys.id && selected.sys.id === ct.sys.id
+        (selected: SelectedContentType) =>
+          selected.spaceId === ct.sys.space.sys.id && selected.id === ct.sys.id
       );
 
       if (foundIndex > -1) {
         removeContentType(foundIndex);
       } else {
-        addContentType(ct);
+        addContentType({
+          spaceId: ct.sys.space.sys.id,
+          id: ct.sys.id,
+          name: ct.name,
+          displayField: ct.displayField,
+        });
       }
     },
     [selectedContentTypes, addContentType, removeContentType]
@@ -108,8 +114,8 @@ const SortableCard = (props: SortableCardProps) => {
                       isChecked={
                         selectedContentTypes.findIndex(
                           selectedCt =>
-                            selectedCt.sys.id === ct.sys.id &&
-                            selectedCt.sys.space.sys.id === ct.sys.space.sys.id
+                            selectedCt.id === ct.sys.id &&
+                            selectedCt.spaceId === ct.sys.space.sys.id
                         ) > -1
                       }
                     >

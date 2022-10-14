@@ -1,29 +1,29 @@
+import { SelectedContentType } from 'types';
 import create from 'zustand';
-import { ContentTypeProps } from 'contentful-management';
 
 export interface ConfigState {
-  selectedContentTypes: ContentTypeProps[];
+  selectedContentTypes: SelectedContentType[];
   selectedSpaces: string[];
   spaceOrder: string[];
   algoliaApiKey: string;
   algoliaId: string;
   algoliaIndexName: string;
-  setContentTypes: (ct: ContentTypeProps[]) => void;
+  setContentTypes: (ct: SelectedContentType[]) => void;
   setSelectedSpaces: (spaces: string[]) => void;
-  addContentType: (ct: ContentTypeProps) => void;
+  addContentType: (ct: SelectedContentType) => void;
   removeContentType: (foundIndex: number) => void;
   toggleSpaceIds: (spaceId: string) => void;
   setSpaceOrder: (spaceIds: string[]) => void;
 }
 
 const useConfigStore = create<ConfigState>()(set => ({
-  selectedContentTypes: [] as ContentTypeProps[],
+  selectedContentTypes: [] as SelectedContentType[],
   selectedSpaces: [],
   spaceOrder: [],
   algoliaApiKey: '',
   algoliaId: '',
   algoliaIndexName: '',
-  addContentType: (ct: ContentTypeProps) =>
+  addContentType: (ct: SelectedContentType) =>
     set(state => ({
       selectedContentTypes: [...state.selectedContentTypes, ...[ct]],
     })),
@@ -47,7 +47,7 @@ const useConfigStore = create<ConfigState>()(set => ({
         selectedSpaces: updatedSpaces,
       };
     }),
-  setContentTypes: (cts: ContentTypeProps[]) => set(state => ({ selectedContentTypes: cts })),
+  setContentTypes: (cts: SelectedContentType[]) => set(state => ({ selectedContentTypes: cts })),
   setSelectedSpaces: (spaceIds: string[]) => set(state => ({ selectedSpaces: spaceIds })),
   setSpaceOrder: (spaceIds: string[]) => set(state => ({ spaceOrder: spaceIds })),
 }));
