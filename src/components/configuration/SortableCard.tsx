@@ -101,7 +101,18 @@ const SortableCard = (props: SortableCardProps) => {
               >
                 {contentTypes?.items.map((ct: ContentTypeProps) => (
                   <Grid.Item key={`${ct.sys.space.sys.id}-${ct.sys.id}`}>
-                    <Checkbox id={ct.sys.id} value={ct.sys.id} onChange={() => toggleCt(ct)}>
+                    <Checkbox
+                      id={ct.sys.id}
+                      value={ct.sys.id}
+                      onChange={() => toggleCt(ct)}
+                      isChecked={
+                        selectedContentTypes.findIndex(
+                          selectedCt =>
+                            selectedCt.sys.id === ct.sys.id &&
+                            selectedCt.sys.space.sys.id === ct.sys.space.sys.id
+                        ) > -1
+                      }
+                    >
                       {ct.name}
                     </Checkbox>
                   </Grid.Item>

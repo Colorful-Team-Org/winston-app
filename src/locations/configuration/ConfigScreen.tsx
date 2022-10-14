@@ -10,8 +10,12 @@ import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
 import DraggableSpaces from 'components/configuration/DraggableSpaces';
 import useConfigStore from 'core/stores/config.store';
+import { ContentTypeProps } from 'contentful-management';
 
 export interface AppInstallationParameters {
+  selectedContentTypes: ContentTypeProps[];
+  selectedSpaces: string[];
+  spaceOrder: string[];
   algoliaApiKey: string;
   algoliaId: string;
   algoliaIndexName: string;
@@ -27,11 +31,29 @@ const filterCurrentSpace = (locations: string[], currentSpace: string) =>
 
 const ConfigScreen = () => {
   const [parameters, setParameters] = useState<AppInstallationParameters>({
+    selectedContentTypes: [],
+    selectedSpaces: [],
+    spaceOrder: [],
     algoliaApiKey: '',
     algoliaId: '',
     algoliaIndexName: '',
   });
-  // const { selectedContentTypes, selectedSpaces } = useConfigStore();
+  // const { selectedSpaces, spaceOrder } = useConfigStore();
+  const {
+    selectedSpaces,
+    selectedContentTypes,
+    spaceOrder,
+    algoliaApiKey,
+    algoliaId,
+    algoliaIndexName,
+  } = useConfigStore(state => ({
+    selectedContentTypes: state.selectedContentTypes,
+    selectedSpaces: state.selectedSpaces,
+    spaceOrder: state.spaceOrder,
+    algoliaApiKey: state.algoliaApiKey,
+    algoliaId: state.algoliaId,
+    algoliaIndexName: state.algoliaIndexName,
+  }));
 
   const sdk = useSDK<AppExtensionSDK>();
   const { locations } = useLocations();
@@ -50,12 +72,19 @@ const ConfigScreen = () => {
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
-
+    console.log(useConfigStore.getState());
     return {
-      parameters,
+      parameters: {
+        selectedContentTypes: useConfigStore.getState().selectedContentTypes,
+        selectedSpaces: useConfigStore.getState().selectedSpaces,
+        spaceOrder: useConfigStore.getState().spaceOrder,
+        algoliaApiKey: useConfigStore.getState().algoliaApiKey,
+        algoliaId: useConfigStore.getState().algoliaId,
+        algoliaIndexName: useConfigStore.getState().algoliaIndexName,
+      },
       targetState: currentState,
     };
-  }, [parameters, sdk]);
+  }, [sdk]);
 
   useEffect(() => {
     sdk.app.onConfigure(() => onConfigure());
@@ -66,11 +95,16 @@ const ConfigScreen = () => {
       const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
 
       if (currentParameters) {
-        setParameters(currentParameters);
+        useConfigStore.setState({
+          selectedContentTypes: currentParameters.selectedContentTypes || [],
+          selectedSpaces: currentParameters.selectedSpaces || [],
+          spaceOrder: currentParameters.spaceOrder || [],
+          algoliaApiKey: currentParameters.algoliaApiKey,
+          algoliaId: currentParameters.algoliaId,
+          algoliaIndexName: currentParameters.algoliaIndexName,
+        });
       }
 
-      // Once preparation has finished, call `setReady` to hide
-      // the loading screen and present the app to a user.
       sdk.app.setReady();
     })();
   }, [sdk]);
@@ -87,10 +121,9 @@ const ConfigScreen = () => {
         <FormControl>
           <FormControl.Label>Algolia App ID:</FormControl.Label>
           <TextInput
-            value={parameters.algoliaId}
+            value={useConfigStore.getState().algoliaId}
             onChange={e => {
-              setParameters({
-                ...parameters,
+              useConfigStore.setState({
                 algoliaId: e.target.value,
               });
             }}
@@ -99,10 +132,9 @@ const ConfigScreen = () => {
         <FormControl>
           <FormControl.Label>Algolia API Key:</FormControl.Label>
           <TextInput
-            value={parameters.algoliaApiKey}
+            value={useConfigStore.getState().algoliaApiKey}
             onChange={e => {
-              setParameters({
-                ...parameters,
+              useConfigStore.setState({
                 algoliaApiKey: e.target.value,
               });
             }}
@@ -111,10 +143,9 @@ const ConfigScreen = () => {
         <FormControl>
           <FormControl.Label>Algolia Index Name:</FormControl.Label>
           <TextInput
-            value={parameters.algoliaIndexName}
+            value={useConfigStore.getState().algoliaIndexName}
             onChange={e => {
-              setParameters({
-                ...parameters,
+              useConfigStore.setState({
                 algoliaIndexName: e.target.value,
               });
             }}

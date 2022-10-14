@@ -12,14 +12,16 @@ import SpaceSkeleton from 'components/loaders/SpaceSkeleton';
 import LiveSearch from 'components/algolia/LiveSearch';
 
 import { ReactComponent as Logo } from 'images/colorful.svg';
+import { sortStringsByArray } from 'core/utils/sorting';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
-  const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
-
-  useEffect(() => {
-    setSelectedSpaces(sdk.parameters.installation.selectedSpaces);
-  }, [sdk.parameters.installation.selectedSpaces]);
+  const [selectedSpaces] = useState<string[]>(() => {
+    return sortStringsByArray(
+      sdk.parameters.installation.selectedSpaces,
+      sdk.parameters.installation.spaceOrder
+    );
+  });
 
   return (
     <Box paddingBottom="spacing3Xl">

@@ -40,7 +40,6 @@ const DraggableSpaces = (props: DraggableSpacesProps) => {
       result.destination.index
     );
 
-    console.log(reorderedSpaces);
     setSpaces(s => {
       setSpaceOrder(reorderedSpaces.map((s: SpaceProps) => s.sys.id));
       return reorderedSpaces;
