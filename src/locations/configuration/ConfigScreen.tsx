@@ -30,6 +30,13 @@ const filterCurrentSpace = (locations: string[], currentSpace: string) =>
   locations.filter(l => l !== currentSpace);
 
 const ConfigScreen = () => {
+  // const { selectedSpaces, spaceOrder } = useConfigStore();
+  const { algoliaApiKey, algoliaId, algoliaIndexName } = useConfigStore(state => ({
+    algoliaApiKey: state.algoliaApiKey,
+    algoliaId: state.algoliaId,
+    algoliaIndexName: state.algoliaIndexName,
+  }));
+
   const sdk = useSDK<AppExtensionSDK>();
   const { locations } = useLocations();
   const filteredLocations = filterCurrentSpace(locations ?? [], sdk.ids.space);
@@ -47,7 +54,7 @@ const ConfigScreen = () => {
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
-    console.log(useConfigStore.getState());
+
     return {
       parameters: {
         selectedContentTypes: useConfigStore.getState().selectedContentTypes,
@@ -96,7 +103,7 @@ const ConfigScreen = () => {
         <FormControl>
           <FormControl.Label>Algolia App ID:</FormControl.Label>
           <TextInput
-            value={useConfigStore.getState().algoliaId}
+            value={algoliaId}
             onChange={e => {
               useConfigStore.setState({
                 algoliaId: e.target.value,
@@ -107,7 +114,7 @@ const ConfigScreen = () => {
         <FormControl>
           <FormControl.Label>Algolia API Key:</FormControl.Label>
           <TextInput
-            value={useConfigStore.getState().algoliaApiKey}
+            value={algoliaApiKey}
             onChange={e => {
               useConfigStore.setState({
                 algoliaApiKey: e.target.value,
@@ -118,7 +125,7 @@ const ConfigScreen = () => {
         <FormControl>
           <FormControl.Label>Algolia Index Name:</FormControl.Label>
           <TextInput
-            value={useConfigStore.getState().algoliaIndexName}
+            value={algoliaIndexName}
             onChange={e => {
               useConfigStore.setState({
                 algoliaIndexName: e.target.value,
