@@ -8,7 +8,7 @@ import {
   Grid,
 } from '@contentful/f36-components';
 import { SpaceProps, ContentTypeProps } from 'contentful-management';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import style from './SortableCard.styles';
 import { getContentTypes } from 'app.service';
@@ -35,6 +35,7 @@ const SortableCard = (props: SortableCardProps) => {
     removeContentType,
     toggleSpaceIds,
   } = useConfigStore();
+  const [isExpanded, setIsExpanded] = useState(selectedSpaces.includes(id));
 
   const { data: contentTypes, isLoading: ctLoading } = useQuery(
     ['contentTypes', sys.id],
@@ -71,32 +72,33 @@ const SortableCard = (props: SortableCardProps) => {
       {provided => (
         <Flex
           as="div"
-          flexDirection="column"
-          className={style.toggleBtn}
+          flexWrap="wrap"
           ref={provided.innerRef}
           {...provided.draggableProps}
           style={provided.draggableProps.style}
+          alignItems="center"
         >
-          <ToggleButton
-            isActive={selectedSpaces.includes(sys.id)}
-            onToggle={() => toggleSpaceIds(id)}
-            className={style.toggleBtn}
-          >
-            <Flex gap="spacingS" alignItems="center">
-              <SortableDragHandle {...provided.dragHandleProps} />
-              <Checkbox
-                id={sys.id}
-                value={sys.id}
-                key={`${sys.id}`}
-                isChecked={selectedSpaces.includes(sys.id)}
-                onChange={() => {}}
-              />
-              <strong>{name}</strong>
-              <Text fontColor="gray600">({sys.id})</Text>
-            </Flex>
-          </ToggleButton>
+          <Flex alignItems="center" gap="spacingS" className={style.toggleBtn}>
+            <SortableDragHandle {...provided.dragHandleProps} />
+            <Checkbox
+              id={sys.id}
+              value={sys.id}
+              key={`${sys.id}`}
+              isChecked={selectedSpaces.includes(sys.id)}
+              onChange={() => toggleSpaceIds(sys.id)}
+            />
+            <ToggleButton
+              isActive={selectedSpaces.includes(sys.id)}
+              onToggle={() => setIsExpanded(!isExpanded)}
+            >
+              <Flex gap="spacingS" alignItems="center">
+                <strong>{name}</strong>
+                <Text fontColor="gray600">({sys.id})</Text>
+              </Flex>
+            </ToggleButton>
+          </Flex>
           {!ctLoading && (
-            <Collapse isExpanded={selectedSpaces.includes(sys.id)}>
+            <Collapse isExpanded={isExpanded} style={{ width: '100%' }}>
               <Grid
                 columnGap="spacingS"
                 rowGap="spacingS"

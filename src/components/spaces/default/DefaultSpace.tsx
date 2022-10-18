@@ -37,6 +37,7 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
   const [sortedEntries, setSortedEntries] = useState<EntryProps[]>([]);
 
   useEffect(() => {
+    console.log(entries);
     if (!entries) return;
 
     const sorted = entries.items.sort((a, b) => {

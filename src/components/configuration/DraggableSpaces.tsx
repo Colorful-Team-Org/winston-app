@@ -50,7 +50,12 @@ const DraggableSpaces = (props: DraggableSpacesProps) => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="spaces">
         {provided => (
-          <Flex flexDirection="column" ref={provided.innerRef} {...provided.droppableProps}>
+          <Flex
+            flexDirection="column"
+            gap="spacingS"
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
             {spaces.map((space: SpaceProps, i: number) => (
               <SortableCard id={space.sys.id} {...space} key={space.sys.id} index={i} />
             ))}

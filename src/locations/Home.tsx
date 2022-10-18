@@ -13,6 +13,7 @@ import LiveSearch from 'components/algolia/LiveSearch';
 
 import { ReactComponent as Logo } from 'images/colorful.svg';
 import { sortStringsByArray } from 'core/utils/sorting';
+import SpaceErrorBoundary from 'components/SpaceErrorBoundary';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
@@ -52,7 +53,9 @@ const Home = () => {
         <Suspense fallback={<SpaceSkeleton />}>
           {selectedSpaces.length > 0 ? (
             sdk.parameters.installation.selectedSpaces.map((s: string) => (
-              <DefaultSpace key={s} spaceId={s} />
+              <SpaceErrorBoundary>
+                <DefaultSpace key={s} spaceId={s} />
+              </SpaceErrorBoundary>
             ))
           ) : (
             <Flex
