@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { AppExtensionSDK } from '@contentful/app-sdk';
 import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
 import styles from './styles';
-import { Box, Heading, Flex, FormControl, TextInput } from '@contentful/f36-components';
+import { Box, Heading, Flex, FormControl, TextInput, Paragraph } from '@contentful/f36-components';
 
 import { ReactComponent as Logo } from '../../images/colorful.svg';
 import { useQueries } from '@tanstack/react-query';
@@ -95,9 +95,16 @@ const ConfigScreen = () => {
     <>
       <Box className={styles.background} />
       <Box className={styles.body}>
+        <Heading as="h2">Displayed Spaces:</Heading>
+        <Paragraph>
+          Selected which spaces and content types you'd like to display on the home screen.
+        </Paragraph>
         <Flex flexDirection="column">
           {!spaces.some(s => s.isLoading) && <DraggableSpaces spaces={spaces} />}
         </Flex>
+        <Paragraph marginTop="spacingL">
+          The configuration displays all the spaces where the Space Home app is installed.
+        </Paragraph>
         <hr className={styles.splitter} />
         <Heading as="h2">Algolia Configuration</Heading>
         <FormControl>

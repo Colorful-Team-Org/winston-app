@@ -53,7 +53,7 @@ const Home = () => {
         <Suspense fallback={<SpaceSkeleton />}>
           {selectedSpaces.length > 0 ? (
             sdk.parameters.installation.selectedSpaces.map((s: string) => (
-              <SpaceErrorBoundary>
+              <SpaceErrorBoundary sdk={sdk}>
                 <DefaultSpace key={s} spaceId={s} />
               </SpaceErrorBoundary>
             ))

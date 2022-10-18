@@ -35,7 +35,7 @@ const SortableCard = (props: SortableCardProps) => {
     removeContentType,
     toggleSpaceIds,
   } = useConfigStore();
-  const [isExpanded, setIsExpanded] = useState(selectedSpaces.includes(id));
+  const [isExpanded, setIsExpanded] = useState(index === 0);
 
   const { data: contentTypes, isLoading: ctLoading } = useQuery(
     ['contentTypes', sys.id],
