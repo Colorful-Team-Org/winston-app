@@ -40,12 +40,34 @@ const NoResults = (props: any) => (
   </Box>
 );
 
+const Result = (props: { spaceData: UseQueryResult<SpaceProps>[]; hit: any }) => {
+  const { hit, spaceData } = props;
+  const space = findSpace(spaceData, hit.space);
+
+  return (
+    <Box
+      as="a"
+      href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${space.data?.sys.id}/entries/${hit.entry.id}`}
+      key={hit.entry.id}
+      target="_blank"
+    >
+      <Badge variant="secondary" size="small" className={styles.subheading}>
+        {space && space.data ? space.data.name : <>Unknown</>}
+      </Badge>
+      <Heading as="h3">{hit.entry.title}</Heading>
+      <Paragraph marginBottom="none" className={styles.resultBody}>
+        {hit.entry.body}
+      </Paragraph>
+    </Box>
+  );
+};
+
 const Hits = (props: any) => {
   const { hits, results } = useHits();
   const { indexUiState } = useInstantSearch();
 
   const spaces = Array.from(new Set(hits.map(hit => hit.space))) as string[];
-  const spaceData = useQueries({
+  const spaceData: UseQueryResult<SpaceProps>[] = useQueries({
     queries: spaces.map(sId => ({
       queryKey: ['space', sId],
       queryFn: () => getSpace(sId),
@@ -64,26 +86,7 @@ const Hits = (props: any) => {
     >
       <Box className={clsx(props.className, { show: indexUiState.query })}>
         {hits.map((hit: any, i: number) => (
-          <Box
-            as="a"
-            href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${
-              findSpace(spaceData, hit.space).data!.sys.id
-            }/entries/${hit.entry.id}`}
-            key={hit.entry.id + '_' + i}
-            target="_blank"
-          >
-            <Badge variant="secondary" size="small" className={styles.subheading}>
-              {findSpace(spaceData, hit.space) ? (
-                findSpace(spaceData, hit.space)!.data!.name
-              ) : (
-                <>Unknown</>
-              )}
-            </Badge>
-            <Heading as="h3">{hit.entry.title}</Heading>
-            <Paragraph marginBottom="none" className={styles.resultBody}>
-              {hit.entry.body}
-            </Paragraph>
-          </Box>
+          <Result spaceData={spaceData} hit={hit} />
         ))}
       </Box>
     </NoResultsBoundary>
