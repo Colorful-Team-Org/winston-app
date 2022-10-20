@@ -38,7 +38,7 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
 
   useEffect(() => {
     console.log(entries);
-    if (!entries) return;
+    if (!entries || !entries.items.length) return;
 
     const sorted = entries.items.sort((a, b) => {
       const aDate = new Date(a.sys.updatedAt);

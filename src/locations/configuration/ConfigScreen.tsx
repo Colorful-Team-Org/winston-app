@@ -30,7 +30,6 @@ const filterCurrentSpace = (locations: string[], currentSpace: string) =>
   locations.filter(l => l !== currentSpace);
 
 const ConfigScreen = () => {
-  // const { selectedSpaces, spaceOrder } = useConfigStore();
   const { algoliaApiKey, algoliaId, algoliaIndexName } = useConfigStore(state => ({
     algoliaApiKey: state.algoliaApiKey,
     algoliaId: state.algoliaId,
@@ -75,7 +74,6 @@ const ConfigScreen = () => {
   useEffect(() => {
     (async () => {
       const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
-
       if (currentParameters) {
         useConfigStore.setState({
           selectedContentTypes: currentParameters.selectedContentTypes || [],

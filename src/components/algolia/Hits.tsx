@@ -86,7 +86,7 @@ const Hits = (props: any) => {
     >
       <Box className={clsx(props.className, { show: indexUiState.query })}>
         {hits.map((hit: any, i: number) => (
-          <Result spaceData={spaceData} hit={hit} />
+          <Result spaceData={spaceData} hit={hit} key={i} />
         ))}
       </Box>
     </NoResultsBoundary>
