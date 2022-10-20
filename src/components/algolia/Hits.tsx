@@ -19,7 +19,7 @@ function NoResultsBoundary({ children, fallback }: any) {
 
   // The `__isArtificial` flag makes sure to not display the No Results message
   // when no hits have been returned yet.
-  if (!results.__isArtificial && results.nbHits === 0) {
+  if (!results.__isArtificial && results.nbHits === 0 && results.query !== '') {
     return (
       <>
         {fallback}

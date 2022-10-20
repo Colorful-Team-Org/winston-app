@@ -49,7 +49,8 @@ const Home = () => {
         gap="spacing2Xl"
       >
         {sdk.parameters.installation.algoliaIndexName !== '' &&
-          sdk.parameters.installation.algoliaIndexName && <LiveSearch />}
+          sdk.parameters.installation.algoliaIndexName &&
+          !!selectedSpaces.length && <LiveSearch spaceIds={selectedSpaces} />}
         <Suspense fallback={<SpaceSkeleton />}>
           {selectedSpaces.length > 0 ? (
             sdk.parameters.installation.selectedSpaces.map((s: string) => (

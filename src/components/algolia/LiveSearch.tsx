@@ -10,9 +10,15 @@ import styles from './styles';
 
 import 'instantsearch.css/themes/satellite.css';
 
-const LiveSearch = () => {
+type LiveSearchProps = {
+  spaceIds: string[];
+};
+
+const LiveSearch = (props: LiveSearchProps) => {
   const sdk = useSDK();
+  const { spaceIds } = props;
   const [algolia, setAlgolia] = useState<SearchClient | null>(null);
+  const [spaceIdFilter] = useState<string>(() => spaceIds.join(' OR space:'));
 
   useEffect(() => {
     if (
@@ -37,7 +43,7 @@ const LiveSearch = () => {
           searchClient={algolia}
           indexName={sdk.parameters.installation.algoliaIndexName}
         >
-          <Configure hitsPerPage={5} filters={`locale:en-US`} />
+          <Configure hitsPerPage={5} filters={`locale:en-US AND space:${spaceIdFilter}`} />
           <SearchBox className={styles.searchBox} placeholder="Search spaces..." />
           <Hits className={styles.searchResults} />
         </InstantSearch>
