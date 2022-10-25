@@ -25,7 +25,7 @@ const getSpace = (spaceId: string) => {
 const getContentTypes = (spaceId: string) => {
   const { cma } = getAppState();
 
-  return cma!.contentType.getMany({ spaceId, limit: 1000 });
+  return cma!.contentType.getMany({ spaceId, limit: 1000, environmentId: 'master' });
 };
 
 const getEntries = async (options: FetchOptions) => {
@@ -98,6 +98,7 @@ const getManyEntries = (options: FetchOptions) => {
   const { cma } = getAppState();
 
   return cma!.entry.getMany({
+    environmentId: 'master',
     spaceId: options.spaceId,
     query: { limit: 6, ...options.query },
   });

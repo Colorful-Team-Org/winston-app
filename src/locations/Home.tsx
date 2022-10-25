@@ -17,6 +17,7 @@ import SpaceErrorBoundary from 'components/SpaceErrorBoundary';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
+  console.log(sdk);
   const [selectedSpaces] = useState<string[]>(() => {
     return sortStringsByArray(
       sdk.parameters.installation.selectedSpaces,
@@ -52,10 +53,10 @@ const Home = () => {
           sdk.parameters.installation.algoliaIndexName &&
           !!selectedSpaces.length && <LiveSearch spaceIds={selectedSpaces} />}
         <Suspense fallback={<SpaceSkeleton />}>
-          {selectedSpaces.length > 0 ? (
+          {!!selectedSpaces && !!selectedSpaces.length ? (
             sdk.parameters.installation.selectedSpaces.map((s: string) => (
-              <SpaceErrorBoundary sdk={sdk}>
-                <DefaultSpace key={s} spaceId={s} />
+              <SpaceErrorBoundary sdk={sdk} key={s}>
+                <DefaultSpace spaceId={s} />
               </SpaceErrorBoundary>
             ))
           ) : (
