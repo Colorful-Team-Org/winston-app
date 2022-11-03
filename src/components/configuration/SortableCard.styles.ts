@@ -10,7 +10,7 @@ const styles = {
       width: '100%',
     },
   }),
-  toggleBtn: css({
+  toggleBtnContainer: css({
     width: '100%',
     maxWidth: 'none',
     textAlign: 'left',
@@ -18,18 +18,22 @@ const styles = {
     border: 'solid 1px',
     borderColor: tokens.gray400,
     borderRadius: tokens.borderRadiusSmall,
+    transitionDuration: tokens.transitionDurationDefault,
 
-    '& button': {
-      border: 'none',
-      padding: 0,
-      flex: 1,
-      display: 'block',
-      maxWidth: 'initial',
-      background: 'transparent',
+    '&:hover': {
+      background: tokens.blue100,
     },
   }),
-  'button[data-state="on"]': css({
+  toggleBtn: css({
     background: 'transparent',
+    border: 0,
+    flex: '1',
+    maxWidth: '100%',
+    minHeight: 0,
+
+    '&:hover': {
+      background: 'transparent',
+    },
   }),
   contentTypeContainer: css({
     padding: tokens.spacingM,

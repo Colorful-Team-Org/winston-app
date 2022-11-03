@@ -95,16 +95,21 @@ const ConfigScreen = () => {
       <Box className={styles.body}>
         <Heading as="h2">Displayed Spaces:</Heading>
         <Paragraph>
-          Selected which spaces and content types you'd like to display on the home screen.
+          Select the sources of content to display on the home screen of your space.
         </Paragraph>
         <Flex flexDirection="column">
           {!spaces.some(s => s.isLoading) && <DraggableSpaces spaces={spaces} />}
         </Flex>
         <Paragraph marginTop="spacingL">
-          The configuration displays all the spaces where the Space Home app is installed.
+          The configuration screen displays all the spaces within your organization where the Space
+          Home app is installed.
         </Paragraph>
         <hr className={styles.splitter} />
-        <Heading as="h2">Algolia Configuration</Heading>
+        <Heading as="h2">Search</Heading>
+        <Paragraph>
+          To enable users search across associated spaces, please provide the details of your
+          Algolia search index.
+        </Paragraph>
         <FormControl>
           <FormControl.Label>Algolia App ID:</FormControl.Label>
           <TextInput

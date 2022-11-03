@@ -78,7 +78,7 @@ const SortableCard = (props: SortableCardProps) => {
           style={provided.draggableProps.style}
           alignItems="center"
         >
-          <Flex alignItems="center" gap="spacingS" className={style.toggleBtn}>
+          <Flex alignItems="center" gap="spacingS" className={style.toggleBtnContainer}>
             <SortableDragHandle {...provided.dragHandleProps} />
             <Checkbox
               id={sys.id}
@@ -87,10 +87,7 @@ const SortableCard = (props: SortableCardProps) => {
               isChecked={selectedSpaces.includes(sys.id)}
               onChange={() => toggleSpaceIds(sys.id)}
             />
-            <ToggleButton
-              isActive={selectedSpaces.includes(sys.id)}
-              onToggle={() => setIsExpanded(!isExpanded)}
-            >
+            <ToggleButton onToggle={() => setIsExpanded(!isExpanded)} className={style.toggleBtn}>
               <Flex gap="spacingS" alignItems="center">
                 <strong>{name}</strong>
                 <Text fontColor="gray600">({sys.id})</Text>
