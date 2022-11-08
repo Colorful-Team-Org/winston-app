@@ -30,6 +30,8 @@ const styles = {
     flex: '1',
     maxWidth: '100%',
     minHeight: 0,
+    justifyContent: 'flex-start',
+    paddingLeft: 0,
 
     '&:hover': {
       background: 'transparent',
