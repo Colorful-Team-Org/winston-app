@@ -5,7 +5,10 @@ import { getEntries } from 'app.service';
 const useEntries = (spaceId: string, currentSpace: boolean = false) => {
   const sdk = useSDK();
   const currentQuery = currentSpace ? { 'sys.updatedBy.sys.id': sdk.user.sys.id } : {};
-
+  /**
+   * The query is also dependend on `currentSpace` (or on `currentQuery` if you will).
+   * So `currentSpace` or `currentQuery` has to be added to your queryKey. I think this is a bug.
+   */
   return useQuery(['entries', spaceId], async () => {
     const entryData = await getEntries({
       spaceId: spaceId,

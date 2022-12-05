@@ -16,6 +16,7 @@ const CurrentEntry = (props: CurrentEntryProps) => {
   const { contentTypes, entry } = props;
   const timeAgo = new TimeAgo('en-US');
 
+  /** `useMemo()` maybe? */
   const selectedContentType = contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id);
 
   return entry && selectedContentType ? (

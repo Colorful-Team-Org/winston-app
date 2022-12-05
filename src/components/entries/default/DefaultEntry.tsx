@@ -19,6 +19,8 @@ const DefaultEntry = (props: DefaultEntryProps) => {
   const timeAgo = new TimeAgo('en-US');
 
   const status = entry.sys.publishedAt ? 'Published' : entry.sys.archivedAt ? 'Archived' : 'Draft';
+
+  /** `useMemo()` for `selectedContentType` and `selectedUser` maybe? */
   const selectedContentType = contentTypes
     ? contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id)
     : null;

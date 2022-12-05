@@ -35,7 +35,12 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
   );
 
   const [sortedEntries, setSortedEntries] = useState<EntryProps[]>([]);
-
+  /**
+   * I think this is not the right place for setting `sortedEntries`. Also because
+   * react might call `useEffect()` severaly times now a days (even if `entries` do not change).
+   * I recommend to put the whole `entries` sorting into the `useQuery` callback. Than you can
+   * even get rid of the `useState()` for `setSortedEntries()`.
+   */
   useEffect(() => {
     console.log(entries);
     if (!entries || !entries.items.length) return;
@@ -77,6 +82,10 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
       </Flex>
       <Flex flexDirection="column" gap="spacingS">
         {!isLoading && sortedEntries.length > 0 ? (
+          /**
+           * I would avoid explicit typing if type inference is working
+           * on its own.
+           */
           sortedEntries.map((e: EntryProps, i: number) => (
             <DefaultEntry
               key={`${e.sys.id}_${i}`}

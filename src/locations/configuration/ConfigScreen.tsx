@@ -53,6 +53,19 @@ const ConfigScreen = () => {
 
   const onConfigure = useCallback(async () => {
     const currentState = await sdk.app.getCurrentState();
+    /** Do not know how "expensive" `getState()` is, but why even try.
+     * So maybe like more like this(?):
+     * ```
+     * const state = useConfigStore.getState();
+     *  return {
+     *    parameters: {
+     *      selectedContentTypes: state.selectedContentTypes,
+     *      selectedSpaces: state.setSelectedSpaces,
+     *      //...
+     *    }
+        }
+     * ```
+    */
 
     return {
       parameters: {

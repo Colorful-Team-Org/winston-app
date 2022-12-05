@@ -66,6 +66,7 @@ const Hits = (props: any) => {
   const { hits, results } = useHits();
   const { indexUiState } = useInstantSearch();
 
+  /** `useMemo()` for creating `queries` array maybe? */
   const spaces = Array.from(new Set(hits.map(hit => hit.space))) as string[];
   const spaceData: UseQueryResult<SpaceProps>[] = useQueries({
     queries: spaces.map(sId => ({
