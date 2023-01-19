@@ -23,6 +23,8 @@ const CurrentEntry = (props: CurrentEntryProps) => {
       as="a"
       href={`${process.env.REACT_APP_CONTENTFUL_URL}/spaces/${entry.sys.space.sys.id}/entries/${entry.sys.id}`}
       className={styles.entry}
+      target="_blank"
+      rel="noopener noreferrer"
     >
       <Flex flexDirection="column">
         <Flex flexDirection="row" gap="spacingM" padding="spacingM">
