@@ -17,7 +17,6 @@ import SpaceErrorBoundary from 'components/SpaceErrorBoundary';
 
 const Home = () => {
   const sdk = useSDK<HomeExtensionSDK>();
-  console.log(sdk);
   const [selectedSpaces] = useState<string[]>(() => {
     return sortStringsByArray(
       sdk.parameters.installation.selectedSpaces,
