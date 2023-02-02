@@ -43,7 +43,10 @@ const LiveSearch = (props: LiveSearchProps) => {
           searchClient={algolia}
           indexName={sdk.parameters.installation.algoliaIndexName}
         >
-          <Configure hitsPerPage={5} filters={`locale:en-US AND space:${spaceIdFilter}`} />
+          <Configure
+            hitsPerPage={5}
+            filters={`locale:en-US AND space:${spaceIdFilter} OR space:${sdk.ids.space}`}
+          />
           <SearchBox className={styles.searchBox} placeholder="Search spaces..." />
           <Hits className={styles.searchResults} />
         </InstantSearch>
