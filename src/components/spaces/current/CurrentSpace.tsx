@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Box, Flex, Grid, Icon, Text } from '@contentful/f36-components';
 import { BiCube } from 'react-icons/bi';
 
-import { ReactComponent as Logo } from 'images/colorful-coin-logo.svg';
+import Logo from 'images/logo.png';
 import CurrentEntry from 'components/entries/current/CurrentEntry';
 import { SpaceProps, CollectionProp, ContentTypeProps, UserProps } from 'contentful-management';
 import { useQuery } from '@tanstack/react-query';
@@ -43,7 +43,8 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
           </Text>
         </Box>
         <Box style={{ lineHeight: 1 }}>
-          <Logo style={{ width: '110px' }} />
+          {/* <Logo style={{ width: '110px' }} /> */}
+          <img src={Logo} width="170" alt="Winston App" />
         </Box>
       </Flex>
       <Grid columns="repeat(3, minmax(0, 1fr))" columnGap="spacingL" rowGap="spacingL">

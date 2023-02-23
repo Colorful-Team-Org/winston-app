@@ -11,7 +11,7 @@ import DefaultSpace from 'components/spaces/default/DefaultSpace';
 import SpaceSkeleton from 'components/loaders/SpaceSkeleton';
 import LiveSearch from 'components/algolia/LiveSearch';
 
-import { ReactComponent as Logo } from 'images/colorful.svg';
+import Logo from 'images/logo.png';
 import { sortStringsByArray } from 'core/utils/sorting';
 import SpaceErrorBoundary from 'components/SpaceErrorBoundary';
 
@@ -87,7 +87,7 @@ const Home = () => {
           )}
         </Suspense>
         <Flex flexDirection="column" justifyContent="center" alignItems="center" gap="spacingM">
-          <Logo width="50px" />
+          <img src={Logo} width="200" alt="Winston App" />
           <Text fontColor="gray500">
             &copy; {new Date().getFullYear()} Colorful Collective. All rights reserved.
           </Text>

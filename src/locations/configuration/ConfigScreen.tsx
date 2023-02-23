@@ -4,7 +4,7 @@ import { /* useCMA, */ useSDK } from '@contentful/react-apps-toolkit';
 import styles from './styles';
 import { Box, Heading, Flex, FormControl, TextInput, Paragraph } from '@contentful/f36-components';
 
-import { ReactComponent as Logo } from '../../images/colorful.svg';
+import Logo from '../../images/logo.png';
 import { useQueries } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
@@ -144,8 +144,12 @@ const ConfigScreen = () => {
           />
         </FormControl>
       </Box>
-      <Box style={{ textAlign: 'center' }} paddingTop="spacingXl" paddingBottom="spacingXl">
-        <Logo width="50px" />
+      <Box
+        style={{ display: 'flex', justifyContent: 'center' }}
+        paddingTop="spacingXl"
+        paddingBottom="spacingXl"
+      >
+        <img src={Logo} width="170" alt="Winston App" />
       </Box>
     </>
   );
