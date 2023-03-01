@@ -7,6 +7,7 @@ import clsx from 'clsx';
 
 import TimeAgo from 'javascript-time-ago';
 import { ContentTypeProps, EntryProps, UserProps } from 'contentful-management';
+import { useMemo } from 'react';
 
 type DefaultEntryProps = {
   contentTypes: ContentTypeProps[] | undefined;
@@ -19,12 +20,15 @@ const DefaultEntry = (props: DefaultEntryProps) => {
   const timeAgo = new TimeAgo('en-US');
 
   const status = entry.sys.publishedAt ? 'Published' : entry.sys.archivedAt ? 'Archived' : 'Draft';
-  const selectedContentType = contentTypes
-    ? contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id)
-    : null;
-  const selectedUser = users
-    ? users.find(user => user.sys.id === entry.sys.updatedBy?.sys.id)
-    : null;
+  const selectedContentType = useMemo(
+    () =>
+      contentTypes ? contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id) : null,
+    [contentTypes, entry]
+  );
+  const selectedUser = useMemo(
+    () => (users ? users.find(user => user.sys.id === entry.sys.updatedBy?.sys.id) : null),
+    [users, entry]
+  );
 
   return (
     <Box

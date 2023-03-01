@@ -6,6 +6,7 @@ import { useHits, useInstantSearch } from 'react-instantsearch-hooks-web';
 import clsx from 'clsx';
 
 import styles from './styles';
+import { useMemo } from 'react';
 
 const findSpace = (spaceData: any, spaceId: string) => {
   return (
@@ -66,7 +67,7 @@ const Hits = (props: any) => {
   const { hits, results } = useHits();
   const { indexUiState } = useInstantSearch();
 
-  const spaces = Array.from(new Set(hits.map(hit => hit.space))) as string[];
+  const spaces = useMemo(() => Array.from(new Set(hits.map(hit => hit.space))) as string[], [hits]);
   const spaceData: UseQueryResult<SpaceProps>[] = useQueries({
     queries: spaces.map(sId => ({
       queryKey: ['space', sId],

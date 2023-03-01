@@ -6,6 +6,7 @@ import * as icons from '@contentful/f36-icons';
 import styles from './styles';
 
 import TimeAgo from 'javascript-time-ago';
+import { useMemo } from 'react';
 
 type CurrentEntryProps = {
   contentTypes: ContentTypeProps[];
@@ -16,7 +17,10 @@ const CurrentEntry = (props: CurrentEntryProps) => {
   const { contentTypes, entry } = props;
   const timeAgo = new TimeAgo('en-US');
 
-  const selectedContentType = contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id);
+  const selectedContentType = useMemo(
+    () => contentTypes.find(ct => ct.sys.id === entry.sys.contentType.sys.id),
+    [contentTypes, entry]
+  );
 
   return entry && selectedContentType ? (
     <Box

@@ -19,13 +19,15 @@ const CurrentSpace: FC<CurrentSpaceProps> = (props: CurrentSpaceProps) => {
   const sdk = useSDK();
   const { space, contentTypes, user } = props;
 
-  const { data: entries, isLoading } = useQuery(['currentEntries'], () =>
-    getManyEntries({
-      spaceId: sdk.ids.space,
-      query: {
-        'sys.updatedBy.sys.id': user.sys.id,
-      },
-    })
+  const { data: entries, isLoading } = useQuery(
+    ['currentEntries', sdk.ids.space, user.sys.id],
+    () =>
+      getManyEntries({
+        spaceId: sdk.ids.space,
+        query: {
+          'sys.updatedBy.sys.id': user.sys.id,
+        },
+      })
   );
 
   return space ? (

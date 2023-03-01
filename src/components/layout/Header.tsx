@@ -12,7 +12,7 @@ type HeaderProps = {
 
 const Header: FC<HeaderProps> = (props: HeaderProps) => {
   const { spaceId, user } = props;
-  const { data: space } = useQuery<SpaceProps>(['currentSpace'], () => getSpace(spaceId));
+  const { data: space } = useQuery<SpaceProps>(['currentSpace', spaceId], () => getSpace(spaceId));
   const { data: cts } = useQuery<CollectionProp<ContentTypeProps>>(['currentSpaceCts'], () =>
     getContentTypes(spaceId)
   );
