@@ -5,7 +5,7 @@ import styles from './styles';
 import { Box, Heading, Flex, FormControl, TextInput, Paragraph } from '@contentful/f36-components';
 
 import Logo from '../../images/logo.png';
-import { useQueries } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import useLocations from 'core/hooks/useLocations';
 import { getSpace } from 'app.service';
 import DraggableSpaces from 'components/configuration/DraggableSpaces';
@@ -51,43 +51,43 @@ const ConfigScreen = () => {
     }),
   });
 
-  const onConfigure = useCallback(async () => {
-    const currentState = await sdk.app.getCurrentState();
+  useQuery(['configState'], async () => {
+    const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
+    if (currentParameters) {
+      useConfigStore.setState({
+        selectedContentTypes: currentParameters.selectedContentTypes || [],
+        selectedSpaces: currentParameters.selectedSpaces || [],
+        spaceOrder: currentParameters.spaceOrder || [],
+        algoliaApiKey: currentParameters.algoliaApiKey,
+        algoliaId: currentParameters.algoliaId,
+        algoliaIndexName: currentParameters.algoliaIndexName,
+      });
+    }
 
+    sdk.app.setReady();
+    return useConfigStore.getState();
+  });
+
+  // console.log(config);
+
+  const onConfigure = useCallback(async () => {
+    const configState = useConfigStore.getState();
     return {
       parameters: {
-        selectedContentTypes: useConfigStore.getState().selectedContentTypes,
-        selectedSpaces: useConfigStore.getState().selectedSpaces,
-        spaceOrder: useConfigStore.getState().spaceOrder,
-        algoliaApiKey: useConfigStore.getState().algoliaApiKey,
-        algoliaId: useConfigStore.getState().algoliaId,
-        algoliaIndexName: useConfigStore.getState().algoliaIndexName,
+        selectedContentTypes: configState.selectedContentTypes,
+        selectedSpaces: configState.selectedSpaces,
+        spaceOrder: configState.spaceOrder,
+        algoliaApiKey: configState.algoliaApiKey,
+        algoliaId: configState.algoliaId,
+        algoliaIndexName: configState.algoliaIndexName,
       },
-      targetState: currentState,
+      targetState: { EditorInterface: {} },
     };
-  }, [sdk]);
+  }, []);
 
   useEffect(() => {
     sdk.app.onConfigure(() => onConfigure());
   }, [sdk, onConfigure]);
-
-  useEffect(() => {
-    (async () => {
-      const currentParameters: AppInstallationParameters | null = await sdk.app.getParameters();
-      if (currentParameters) {
-        useConfigStore.setState({
-          selectedContentTypes: currentParameters.selectedContentTypes || [],
-          selectedSpaces: currentParameters.selectedSpaces || [],
-          spaceOrder: currentParameters.spaceOrder || [],
-          algoliaApiKey: currentParameters.algoliaApiKey,
-          algoliaId: currentParameters.algoliaId,
-          algoliaIndexName: currentParameters.algoliaIndexName,
-        });
-      }
-
-      sdk.app.setReady();
-    })();
-  }, [sdk]);
 
   return (
     <>

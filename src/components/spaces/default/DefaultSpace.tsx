@@ -1,5 +1,5 @@
 import { Box, Flex, Icon, Text, TextLink } from '@contentful/f36-components';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { BiCube } from 'react-icons/bi';
 import * as icons from '@contentful/f36-icons';
 import DefaultEntry from 'components/entries/default/DefaultEntry';
@@ -34,21 +34,18 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
     () => getFilteredEntries({ spaceId })
   );
 
-  const [sortedEntries, setSortedEntries] = useState<EntryProps[]>([]);
+  const { data: sortedEntries } = useQuery<EntryProps[]>(['sortedEntries', spaceId], () => {
+    if (!entries || !entries.items.length) return [];
 
-  useEffect(() => {
-    console.log(entries);
-    if (!entries || !entries.items.length) return;
+    return entries.items
+      .sort((a, b) => {
+        const aDate = new Date(a.sys.updatedAt);
+        const bDate = new Date(b.sys.updatedAt);
 
-    const sorted = entries.items.sort((a, b) => {
-      const aDate = new Date(a.sys.updatedAt);
-      const bDate = new Date(b.sys.updatedAt);
-
-      return bDate.getTime() - aDate.getTime();
-    });
-
-    setSortedEntries(sorted.slice(0, 6));
-  }, [entries]);
+        return bDate.getTime() - aDate.getTime();
+      })
+      .slice(0, 6);
+  });
 
   return space ? (
     <Box>
@@ -76,8 +73,8 @@ const DefaultSpace: FC<DefaultSpaceProps> = (props: DefaultSpaceProps) => {
         </TextLink>
       </Flex>
       <Flex flexDirection="column" gap="spacingS">
-        {!isLoading && sortedEntries.length > 0 ? (
-          sortedEntries.map((e: EntryProps, i: number) => (
+        {!isLoading && sortedEntries?.length ? (
+          sortedEntries?.map((e, i) => (
             <DefaultEntry
               key={`${e.sys.id}_${i}`}
               entry={e}

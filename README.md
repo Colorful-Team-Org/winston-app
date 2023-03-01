@@ -1,5 +1,5 @@
 ## Configuration Screen
-![App Configuration](configScreen.png)
+![App Configuration](config.png)
 
 ## App Example
 ![App Example](Example.png)

@@ -6,7 +6,7 @@ const useEntries = (spaceId: string, currentSpace: boolean = false) => {
   const sdk = useSDK();
   const currentQuery = currentSpace ? { 'sys.updatedBy.sys.id': sdk.user.sys.id } : {};
 
-  return useQuery(['entries', spaceId], async () => {
+  return useQuery(['entries', spaceId, currentQuery], async () => {
     const entryData = await getEntries({
       spaceId: spaceId,
       sdk,
