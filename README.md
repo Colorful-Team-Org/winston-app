@@ -12,7 +12,7 @@ The Winston app allows users to determine what spaces and content types should b
 
 ![Winston Configuration Example](config-screen.png)
 
-To install the app in your space, use a public installation URL https://app.contentful.com/deeplink?link=apps&id=1EWOGeolIE9QDCPXiWj9Tr or fork the app codebase and create your own app definition. The app utilizes homepage location that can be customized by selecting the app under the Home menu item in the space settings. 
+To install the app in your space, use a [public installation URL](https://app.contentful.com/deeplink?link=apps&id=1EWOGeolIE9QDCPXiWj9T) or fork the app codebase and create your own app definition. The app utilizes homepage location that can be customized by selecting the app under the Home menu item in the space settings. 
 
 ![Winston Installation](installation.png)
 
